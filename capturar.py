@@ -208,6 +208,10 @@ def main():
         (173, "AVDA DEL EURO C DE LA LIBRA",      "https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C73M1.jpg?itok=pGvrNvA7"),
         (174, "ROT C ARCO IRIS G STEWART",        "https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C67M3.jpg?itok=TxjK7AKD"),
         (175, "C G STEWART HOWIE C MISTRAL 2",    "https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C69M1.jpg?itok=6x1GNiU7"),
+        (176, "ROTONDA AGUA AMARGA C ANTONITA MORENO", "https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C63M1.jpg"),
+        (177, "CN340 C TORMOS 1",                  "https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C64M1.jpg"),
+        (178, "CN340 C TORMOS 2",                  "https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C65M1.jpg"),
+        (179, "CN340 C ANTONITA MORENO",           "https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C66M1.jpg"),
     ]
 
     # ── TIMESTAMP ──
