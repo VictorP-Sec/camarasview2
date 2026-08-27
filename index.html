@@ -1305,97 +1305,359 @@ const CAMERAS = [
 
 // ─── COORDENADAS DE CÁMARAS (lat/lng) ───
 const CAM_COORDS = {
-  // Garbinet
-  2:[38.3535,-0.4712], 7:[38.3540,-0.4695], 9:[38.3538,-0.4700],
-  // Carolinas Altas
-  3:[38.3508,-0.4748], 12:[38.3510,-0.4755], 24:[38.3502,-0.4750],
-  27:[38.3500,-0.4745], 28:[38.3500,-0.4752],
-  // San Fernando
-  4:[38.3430,-0.4800], 5:[38.3435,-0.4790], 10:[38.3432,-0.4795],
-  16:[38.3438,-0.4785], 19:[38.3440,-0.4798], 21:[38.3442,-0.4792],
-  22:[38.3438,-0.4788], 42:[38.3425,-0.4864], 102:[38.3445,-0.4790],
-  // Los Ángeles
-  6:[38.3555,-0.4658], 23:[38.3550,-0.4640], 35:[38.3555,-0.4662],
-  36:[38.3550,-0.4650], 56:[38.3558,-0.4655], 75:[38.3552,-0.4660],
-  // Polígono de Babel
-  8:[38.3498,-0.4475], 13:[38.3505,-0.4510], 14:[38.3500,-0.4495],
-  29:[38.3500,-0.4520], 130:[38.3502,-0.4490], 131:[38.3495,-0.4505],
-  134:[38.3498,-0.4500],
-  // Florida Alta
-  15:[38.3505,-0.4775], 17:[38.3510,-0.4780], 18:[38.3508,-0.4768],
-  // Ciudad Jardín
-  20:[38.3570,-0.4620], 25:[38.3560,-0.4610], 26:[38.3565,-0.4600],
-  72:[38.3575,-0.4615], 73:[38.3580,-0.4580], 74:[38.3585,-0.4570],
-  76:[38.3590,-0.4560], 77:[38.3565,-0.4595], 78:[38.3578,-0.4575],
-  79:[38.3588,-0.4565], 80:[38.3582,-0.4585], 82:[38.3580,-0.4555],
-  84:[38.3570,-0.4585], 85:[38.3588,-0.4558], 86:[38.3585,-0.4562],
-  87:[38.3572,-0.4610], 89:[38.3575,-0.4600], 96:[38.3568,-0.4590],
-  98:[38.3562,-0.4592], 99:[38.3560,-0.4598], 100:[38.3568,-0.4605],
-  101:[38.3580,-0.4590], 107:[38.3582,-0.4588], 108:[38.3578,-0.4592],
-  109:[38.3575,-0.4608],
-  // Altozano
-  30:[38.3488,-0.4775], 31:[38.3490,-0.4780], 32:[38.3495,-0.4778],
-  33:[38.3485,-0.4772], 34:[38.3492,-0.4770], 37:[38.3495,-0.4765],
-  62:[38.3492,-0.4760], 93:[38.3495,-0.4775],
-  // Centro
-  38:[38.3440,-0.4850], 39:[38.3480,-0.4850], 45:[38.3435,-0.4830],
-  46:[38.3438,-0.4835], 52:[38.3444,-0.4838], 53:[38.3445,-0.4805],
-  54:[38.3442,-0.4808], 55:[38.3450,-0.4947], 58:[38.3448,-0.4855],
-  59:[38.3447,-0.4802], 60:[38.3443,-0.4798], 61:[38.3455,-0.4840],
-  63:[38.3445,-0.4815], 64:[38.3438,-0.4825], 65:[38.3473,-0.4874],
-  66:[38.3445,-0.4835], 67:[38.3460,-0.4865], 68:[38.3434,-0.4921],
-  110:[38.3435,-0.4800], 111:[38.3420,-0.4790], 112:[38.3425,-0.4810],
-  142:[38.3430,-0.4815], 143:[38.3415,-0.4899],
-  // Benalúa
-  40:[38.3500,-0.4910], 43:[38.3502,-0.4915], 47:[38.3510,-0.4905],
-  48:[38.3515,-0.4900], 49:[38.3505,-0.4912], 50:[38.3498,-0.4918],
-  51:[38.3508,-0.4908],
-  // Carolinas Bajas
-  11:[38.3460,-0.4740], 41:[38.3465,-0.4735], 44:[38.3460,-0.4730],
-  57:[38.3462,-0.4742], 69:[38.3460,-0.4745], 71:[38.3462,-0.4738],
-  // Juan XXIII
-  88:[38.3540,-0.4550], 91:[38.3545,-0.4555], 121:[38.3548,-0.4552],
-  122:[38.3542,-0.4558], 123:[38.3538,-0.4555], 124:[38.3545,-0.4548],
-  125:[38.3540,-0.4550],
-  // Rabasa
-  81:[38.3600,-0.4550], 90:[38.3605,-0.4545], 94:[38.3608,-0.4540],
-  95:[38.3610,-0.4535], 97:[38.3602,-0.4548],
-  // Vistahermosa
-  70:[38.3590,-0.4400], 113:[38.3600,-0.4405], 114:[38.3595,-0.4410],
-  116:[38.3598,-0.4408], 117:[38.3580,-0.4420], 118:[38.3602,-0.4402],
-  119:[38.3575,-0.4425], 127:[38.3585,-0.4415],
-  // San Gabriel
-  128:[38.3485,-0.4460], 129:[38.3490,-0.4455], 132:[38.3488,-0.4450],
-  133:[38.3482,-0.4465], 139:[38.3480,-0.4470],
-  // Pla del Bon Repòs
-  126:[38.3520,-0.4480], 164:[38.3515,-0.4485], 165:[38.3510,-0.4490],
-  166:[38.3512,-0.4488], 167:[38.3508,-0.4492], 168:[38.3505,-0.4495],
-  169:[38.3518,-0.4478], 170:[38.3520,-0.4475], 171:[38.3522,-0.4472],
-  172:[38.3525,-0.4468], 173:[38.3528,-0.4465], 174:[38.3513,-0.4487],
-  175:[38.3506,-0.4494],
-  // Albufereta
-  115:[38.3620,-0.4350],
-  // Santa Faz
-  120:[38.3700,-0.4300],
-  // Nou Alacant
-  140:[38.3575,-0.4350], 141:[38.3570,-0.4355],
-  // Playa San Juan
-  103:[38.3785,-0.4205], 104:[38.3780,-0.4210], 105:[38.3790,-0.4200],
-  106:[38.3788,-0.4208], 144:[38.3790,-0.4215], 145:[38.3792,-0.4218],
-  146:[38.3788,-0.4212], 147:[38.3785,-0.4208], 148:[38.3800,-0.4200],
-  149:[38.3850,-0.4150], 150:[38.3805,-0.4195], 151:[38.3795,-0.4202],
-  152:[38.3802,-0.4198], 153:[38.3808,-0.4190], 154:[38.3805,-0.4192],
-  155:[38.3798,-0.4200], 156:[38.3802,-0.4195], 157:[38.3855,-0.4145],
-  158:[38.3800,-0.4200], 159:[38.3792,-0.4205], 160:[38.3795,-0.4198],
-  161:[38.3798,-0.4195],
-  // Agua Amarga
-  162:[38.3350,-0.4350], 163:[38.3345,-0.4355], 176:[38.3348,-0.4348],
-  177:[38.3342,-0.4352], 178:[38.3340,-0.4355], 179:[38.3345,-0.4350],
-  // El Palmeral
-  135:[38.3400,-0.4400], 136:[38.3405,-0.4405], 137:[38.3402,-0.4398],
-  138:[38.3408,-0.4402],
-  // Villafranqueza
-  92:[38.3650,-0.4400]
+  // Camara 1: C/ BELLEA DEL FOC, Garbinet
+  1:[38.3562,-0.4718],
+  // Camara 2: C/ ORIÓN, Carolinas Altas
+  2:[38.3545,-0.4915],
+  // Camara 3: CARDENAL FRANCISCO ÁLVAREZ, San Fernando
+  3:[38.3455,-0.4805],
+  // Camara 4: DR. JIMÉNEZ DÍAZ, San Fernando
+  4:[38.3460,-0.4790],
+  // Camara 5: AVDA. NOVELDA, Los Ángeles
+  5:[38.3555,-0.4655],
+  // Camara 6: PLAZA DEL MILENIO, Garbinet
+  6:[38.3558,-0.4705],
+  // Camara 7: C/ MÉXICO, San Gabriel
+  7:[38.3385,-0.5055],
+  // Camara 8: C/ PINTOR XAVIER SOLER, Garbinet
+  8:[38.3555,-0.4698],
+  // Camara 9: DR. JIMÉNEZ DÍAZ, San Fernando
+  9:[38.3462,-0.4785],
+  // Camara 10: C/ DR. RICO - CAMPO DE MIRRA, Carolinas Bajas
+  10:[38.3490,-0.4825],
+  // Camara 11: AV. ORIHUELA, Carolinas Altas
+  11:[38.3535,-0.4875],
+  // Camara 12: A 31, Polígono de Babel
+  12:[38.3515,-0.4510],
+  // Camara 13: C/ MÉXICO, Polígono de Babel
+  13:[38.3510,-0.4505],
+  // Camara 14: AVDA. VNTE. BLASCO IBÁÑEZ, Florida Alta
+  14:[38.3495,-0.4760],
+  // Camara 15: DR. JIMÉNEZ DÍAZ, San Fernando
+  15:[38.3458,-0.4795],
+  // Camara 16: ALCALDE LORENZO CARBONELL, Florida Alta
+  16:[38.3488,-0.4755],
+  // Camara 17: A. L. CARBONELL - CAT. SOLER, Florida Alta
+  17:[38.3492,-0.4750],
+  // Camara 18: GRAN VÍA - PUENTE ROJO, San Fernando
+  18:[38.3475,-0.4740],
+  // Camara 19: BULEVAR DE TEULADA, Ciudad Jardín
+  19:[38.3570,-0.4625],
+  // Camara 20: GRAN VÍA - C/ ISLA DE CORFÚ, San Fernando
+  20:[38.3478,-0.4735],
+  // Camara 21: MARCELINO CHAMPAGNAT, San Fernando
+  21:[38.3472,-0.4745],
+  // Camara 22: AVDA. SANTA POLA, Los Ángeles
+  22:[38.3548,-0.4645],
+  // Camara 23: GRAN VÍA - AV. ORIHUELA, Carolinas Altas
+  23:[38.3520,-0.4860],
+  // Camara 24: AVDA. DR. JIMÉNEZ DÍAZ, Ciudad Jardín
+  24:[38.3555,-0.4615],
+  // Camara 25: C/ TEULADA - E.F. RICO PÉREZ, Ciudad Jardín
+  25:[38.3565,-0.4605],
+  // Camara 26: AVDA. DR. JIMÉNEZ DÍAZ, Carolinas Altas
+  26:[38.3530,-0.4855],
+  // Camara 27: GRAN VÍA - AV. ORIHUELA, Carolinas Altas
+  27:[38.3525,-0.4865],
+  // Camara 28: GRAN VÍA, Polígono de Babel
+  28:[38.3508,-0.4500],
+  // Camara 29: GRAN VÍA, Altozano
+  29:[38.3492,-0.4770],
+  // Camara 30: C/ DEL MAESTRO ALONSO, Altozano
+  30:[38.3495,-0.4780],
+  // Camara 31: C/ DEL MAESTRO ALONSO, Altozano
+  31:[38.3498,-0.4775],
+  // Camara 32: GRAN VÍA - MAESTRO ALONSO, Altozano
+  32:[38.3490,-0.4778],
+  // Camara 33: GRAN VÍA, Altozano
+  33:[38.3488,-0.4772],
+  // Camara 34: GRAN VÍA - AVDA. NOVELDA, Los Ángeles
+  34:[38.3550,-0.4650],
+  // Camara 35: GRAN VÍA - AV. BUENOS AIRES, Los Ángeles
+  35:[38.3545,-0.4645],
+  // Camara 36: GRAN VÍA - AVDA. COLOMBIA, Altozano
+  36:[38.3485,-0.4765],
+  // Camara 37: SALAMANCA - ESTACIÓN, Centro
+  37:[38.3440,-0.4945],
+  // Camara 38: AVDA. AGUILERA, San Blas
+  38:[38.3475,-0.4855],
+  // Camara 39: OSCAR ESPLÁ, Benalúa
+  39:[38.3405,-0.4935],
+  // Camara 40: AVDA. JIJONA, Carolinas Bajas
+  40:[38.3480,-0.4835],
+  // Camara 41: C/ SAN FERNANDO, San Fernando
+  41:[38.3435,-0.4860],
+  // Camara 42: OSCAR ESPLÁ, Benalúa
+  42:[38.3408,-0.4930],
+  // Camara 43: C/ VÁZQUEZ DE MELLA, Carolinas Bajas
+  43:[38.3495,-0.4820],
+  // Camara 44: AVDA. DE LA ESTACIÓN, Centro
+  44:[38.3450,-0.4925],
+  // Camara 45: SALAMANCA - ESTACIÓN, Centro
+  45:[38.3442,-0.4948],
+  // Camara 46: L. CASANOVA - OSCAR ESPLÁ, Benalúa
+  46:[38.3410,-0.4925],
+  // Camara 47: E. SEMPERE - OSCAR ESPLÁ, Benalúa
+  47:[38.3412,-0.4915],
+  // Camara 48: CAT. SOLER - OSCAR ESPLÁ, Benalúa
+  48:[38.3415,-0.4905],
+  // Camara 49: OSCAR ESPLÁ, Benalúa
+  49:[38.3407,-0.4938],
+  // Camara 50: ÓSCAR ESPLÁ - CAT. SOLER, Benalúa
+  50:[38.3418,-0.4900],
+  // Camara 51: RAMBLA DE MÉNDEZ NÚÑEZ, Centro
+  51:[38.3460,-0.4840],
+  // Camara 52: B. P. GALDÓS - GRAL. MARVÁ, Centro
+  52:[38.3475,-0.4920],
+  // Camara 53: AVDA. DR. GADEA, Centro
+  53:[38.3415,-0.4875],
+  // Camara 54: AVDA. SALAMANCA, Centro
+  54:[38.3445,-0.4945],
+  // Camara 55: AVDA. NOVELDA, Los Ángeles
+  55:[38.3558,-0.4658],
+  // Camara 56: C/ PINTOR MURILLO, Carolinas Bajas
+  56:[38.3485,-0.4830],
+  // Camara 57: C/ REYES CATÓLICOS, Centro
+  57:[38.3448,-0.4855],
+  // Camara 58: B. P. GALDÓS - GRAL. MARVÁ, Centro
+  58:[38.3478,-0.4918],
+  // Camara 59: B. P. GALDÓS - PZA. ESPAÑA, Centro
+  59:[38.3460,-0.4910],
+  // Camara 60: C/ CALDERÓN DE LA BARCA, Centro
+  60:[38.3452,-0.4845],
+  // Camara 61: CONDE LUMIARES - AV. ALCOY, Altozano
+  61:[38.3600,-0.4915],
+  // Camara 62: C/ BENITO PÉREZ GALDÓS, Centro
+  62:[38.3472,-0.4922],
+  // Camara 63: B. P. GALDÓS - SALAMANCA, Centro
+  63:[38.3465,-0.4935],
+  // Camara 64: AVDA. ALFONSO X EL SABIO, Centro
+  64:[38.3480,-0.4860],
+  // Camara 65: RAMBLA DE MÉNDEZ NÚÑEZ, Centro
+  65:[38.3462,-0.4842],
+  // Camara 66: A. EL SABIO - SAN VICENTE, Centro
+  66:[38.3470,-0.4880],
+  // Camara 67: AVDA. MAISONNAVE, Centro
+  67:[38.3435,-0.4920],
+  // Camara 68: AVDA. DE ALCOY, Carolinas Bajas
+  68:[38.3495,-0.4840],
+  // Camara 69: AVDA. A. RAMOS CARRATALÁ, Vistahermosa
+  69:[38.3620,-0.4420],
+  // Camara 70: C/ MONTESINOS - PL. CASTALLA, Carolinas Bajas
+  70:[38.3488,-0.4838],
+  // Camara 71: AVDA. BULEVAR DE TEULADA, Ciudad Jardín
+  71:[38.3572,-0.4620],
+  // Camara 72: AV. UNIVERSIDAD - FORTUNY, Ciudad Jardín
+  72:[38.3575,-0.4585],
+  // Camara 73: AVDA. GASTÓN CASTELLÓ, Ciudad Jardín
+  73:[38.3585,-0.4570],
+  // Camara 74: AVDA. NOVELDA, Los Ángeles
+  74:[38.3552,-0.4660],
+  // Camara 75: C/ DEL CUARZO, Ciudad Jardín
+  75:[38.3590,-0.4560],
+  // Camara 76: AVDA. JAIME I, Ciudad Jardín
+  76:[38.3565,-0.4595],
+  // Camara 77: C/ FORTUNY, Ciudad Jardín
+  77:[38.3578,-0.4575],
+  // Camara 78: C/ JOSÉ LUIS BARCELÓ, Ciudad Jardín
+  78:[38.3588,-0.4565],
+  // Camara 79: AVDA. UNICEF, Ciudad Jardín
+  79:[38.3582,-0.4585],
+  // Camara 80: AVDA. NOVELDA, Rabasa
+  80:[38.3600,-0.4550],
+  // Camara 81: AVDA. BARONÍA DE POLOP, Ciudad Jardín
+  81:[38.3580,-0.4555],
+  // Camara 82: C/ FORTUNY, Ciudad Jardín
+  82:[38.3576,-0.4578],
+  // Camara 83: AVDA. UNIVERSIDAD, Ciudad Jardín
+  83:[38.3570,-0.4588],
+  // Camara 84: C/ PINTOR GASTÓN CASTELLÓ, Ciudad Jardín
+  84:[38.3588,-0.4558],
+  // Camara 85: C/ POETA PEDRO SALINAS, Ciudad Jardín
+  85:[38.3585,-0.4562],
+  // Camara 86: AVDA. TEULADA, Ciudad Jardín
+  86:[38.3572,-0.4610],
+  // Camara 87: C/ DEL PADRE ARRUPE, Juan XXIII
+  87:[38.3540,-0.4550],
+  // Camara 88: VÍA PARQUE - JAIME I, Ciudad Jardín
+  88:[38.3575,-0.4600],
+  // Camara 89: AVDA. BARONÍA DE POLOP, Rabasa
+  89:[38.3605,-0.4545],
+  // Camara 90: AVDA. DENIA, Juan XXIII
+  90:[38.3545,-0.4555],
+  // Camara 91: VILLAFRANQUEZA, Villafranqueza
+  91:[38.3685,-0.4400],
+  // Camara 92: C/ MAESTRO ALONSO, Altozano
+  92:[38.3492,-0.4776],
+  // Camara 93: AV. NOVELDA - AV. UNICEF, Rabasa
+  93:[38.3608,-0.4540],
+  // Camara 94: AVDA. UNICEF, Rabasa
+  94:[38.3610,-0.4535],
+  // Camara 95: AVDA. JAIME I, Ciudad Jardín
+  95:[38.3568,-0.4590],
+  // Camara 96: AV. NOVELDA - SAN VICENTE, Rabasa
+  96:[38.3602,-0.4548],
+  // Camara 97: JAIME I - JUDOKA JA VALVERDE, Ciudad Jardín
+  97:[38.3562,-0.4592],
+  // Camara 98: JAIME I - FTAS. TRADICIONALES, Ciudad Jardín
+  98:[38.3560,-0.4598],
+  // Camara 99: AVD. JAIME I - TEULADA, Ciudad Jardín
+  99:[38.3568,-0.4605],
+  // Camara 100: FIESTAS P. Y TRADICIONALES, Ciudad Jardín
+  100:[38.3580,-0.4590],
+  // Camara 101: C/ ISLA DE CORFÚ, San Fernando
+  101:[38.3480,-0.4720],
+  // Camara 102: CÁMARA C21F4, Playa San Juan
+  102:[38.3785,-0.4205],
+  // Camara 103: CÁMARA C21F2, Playa San Juan
+  103:[38.3780,-0.4210],
+  // Camara 104: C/ RÍO MUNI, Playa San Juan
+  104:[38.3790,-0.4200],
+  // Camara 105: N 330, Playa San Juan
+  105:[38.3788,-0.4208],
+  // Camara 106: DPTA. ISABEL FERNÁNDEZ, Ciudad Jardín
+  106:[38.3582,-0.4588],
+  // Camara 107: FIESTAS P. Y TRADICIONALES, Ciudad Jardín
+  107:[38.3578,-0.4592],
+  // Camara 108: AVDA. UNIVERSIDAD, Ciudad Jardín
+  108:[38.3575,-0.4608],
+  // Camara 109: AV. MÁRTIRES DE LA LIBERTAD, Centro
+  109:[38.3430,-0.4815],
+  // Camara 110: SALIDA PUERTO, Centro
+  110:[38.3420,-0.4790],
+  // Camara 111: AV. JUAN BAUTISTA LAFORA, Centro
+  111:[38.3425,-0.4810],
+  // Camara 112: AVDA. DE DENIA, Vistahermosa
+  112:[38.3615,-0.4425],
+  // Camara 113: AV. A. RAMOS CARRATALÁ, Vistahermosa
+  113:[38.3625,-0.4415],
+  // Camara 114: AVDA. ALBUFERETA, Albufereta
+  114:[38.3640,-0.4386],
+  // Camara 115: C/ DEP. ALEJANDRA QUEREDA, Vistahermosa
+  115:[38.3618,-0.4418],
+  // Camara 116: AVDA. DENIA - ACCESO A-70, Vistahermosa
+  116:[38.3610,-0.4430],
+  // Camara 117: AVDA. DE DENIA, Vistahermosa
+  117:[38.3612,-0.4428],
+  // Camara 118: AVDA. DENIA - ACCESO A-70, Vistahermosa
+  118:[38.3608,-0.4432],
+  // Camara 119: AVDA. DE DENIA - SANTA FAZ, Santa Faz
+  119:[38.3750,-0.4350],
+  // Camara 120: AVDA. DENIA, Juan XXIII
+  120:[38.3570,-0.4550],
+  // Camara 121: AVDA. DENIA, Juan XXIII
+  121:[38.3572,-0.4548],
+  // Camara 122: AVDA. PADRE ESPLÁ, Juan XXIII
+  122:[38.3575,-0.4545],
+  // Camara 123: AVDA. PINTOR XAVIER SOLER, Juan XXIII
+  123:[38.3578,-0.4542],
+  // Camara 124: AVDA. DENIA, Juan XXIII
+  124:[38.3570,-0.4552],
+  // Camara 125: AVDA. DENIA, Pla del Bon Repòs
+  125:[38.3545,-0.4735],
+  // Camara 126: AV. DENIA - TORRES DE LA HUERTA, Vistahermosa
+  126:[38.3620,-0.4422],
+  // Camara 127: AVDA. DE ELCHE - C/ FEDERICO MAYO, San Gabriel
+  127:[38.3360,-0.5030],
+  // Camara 128: AVDA. ELCHE - N 332, San Gabriel
+  128:[38.3338,-0.5050],
+  // Camara 129: C/ MÉXICO, Polígono de Babel
+  129:[38.3512,-0.4502],
+  // Camara 130: AVDA. ELCHE, Polígono de Babel
+  130:[38.3505,-0.4508],
+  // Camara 131: AVDA. ELCHE - N 332, San Gabriel
+  131:[38.3340,-0.5045],
+  // Camara 132: AV. ELCHE - J. C. COMBALDIEU, San Gabriel
+  132:[38.3345,-0.5040],
+  // Camara 133: AVDA. ELCHE, Polígono de Babel
+  133:[38.3508,-0.4505],
+  // Camara 134: CTRA. DEL SALADAR, El Palmeral
+  134:[38.3380,-0.4430],
+  // Camara 135: CASA DEL MEDITERRÁNEO, El Palmeral
+  135:[38.3375,-0.4435],
+  // Camara 136: N 332, El Palmeral
+  136:[38.3365,-0.4440],
+  // Camara 137: AVDA. LORING, El Palmeral
+  137:[38.3417,-0.4858],
+  // Camara 138: AVDA. ELCHE, San Gabriel
+  138:[38.3342,-0.5048],
+  // Camara 139: AV. DENIA - AV. VILLAJOYOSA, Nou Alacant
+  139:[38.3580,-0.4480],
+  // Camara 140: AVDA. JUAN BAUTISTA LAFORA, Nou Alacant
+  140:[38.3570,-0.4495],
+  // Camara 141: MÁRTIRES DE LA LIBERTAD, Centro
+  141:[38.3432,-0.4848],
+  // Camara 142: C/ PORTUGAL, Centro
+  142:[38.3415,-0.4899],
+  // Camara 143: ENTRADA CIUDAD, Playa San Juan
+  143:[38.3790,-0.4215],
+  // Camara 144: ENTRADA CIUDAD, Playa San Juan
+  144:[38.3792,-0.4218],
+  // Camara 145: SALIDA CIUDAD, Playa San Juan
+  145:[38.3788,-0.4212],
+  // Camara 146: SALIDA CIUDAD, Playa San Juan
+  146:[38.3785,-0.4208],
+  // Camara 147: AVDA. DE LAS NACIONES, Playa San Juan
+  147:[38.3800,-0.4200],
+  // Camara 148: VILLAJOYOSA - SOL NACIENTE, Playa San Juan
+  148:[38.3850,-0.4150],
+  // Camara 149: AVDA. COSTABLANCA, Playa San Juan
+  149:[38.3805,-0.4195],
+  // Camara 150: CAJA DE AHORROS - AV. DENIA, Playa San Juan
+  150:[38.3795,-0.4202],
+  // Camara 151: AVDA. DE OVIEDO, Playa San Juan
+  151:[38.3802,-0.4198],
+  // Camara 152: AVDA. VICENTE HIPÓLITO, Playa San Juan
+  152:[38.3808,-0.4190],
+  // Camara 153: AVDA. PINTOR PÉREZ GIL, Playa San Juan
+  153:[38.3805,-0.4192],
+  // Camara 154: CAJA DE AHORROS - PLAYAS, Playa San Juan
+  154:[38.3798,-0.4200],
+  // Camara 155: AVDA. NACIONES, Playa San Juan
+  155:[38.3802,-0.4195],
+  // Camara 156: VILLAJOYOSA - PL. ISLETA, Playa San Juan
+  156:[38.3855,-0.4145],
+  // Camara 157: AVDA. COSTABLANCA, Playa San Juan
+  157:[38.3800,-0.4200],
+  // Camara 158: C/ CAJA DE AHORROS, Playa San Juan
+  158:[38.3792,-0.4205],
+  // Camara 159: AVDA. VICENTE HIPÓLITO, Playa San Juan
+  159:[38.3795,-0.4198],
+  // Camara 160: AVDA. CONDOMINA, Playa San Juan
+  160:[38.3798,-0.4195],
+  // Camara 161: A. AMARGA - ANTA. MORENO, Agua Amarga
+  161:[38.3350,-0.4350],
+  // Camara 162: AGUA AMARGA - N 332, Agua Amarga
+  162:[38.3345,-0.4355],
+  // Camara 163: ARCO IRIS - G. STEWART HOWIE, Pla del Bon Repòs
+  163:[38.3515,-0.4485],
+  // Camara 164: C/ ARCO IRIS - SALIDA A 31, Pla del Bon Repòs
+  164:[38.3510,-0.4490],
+  // Camara 165: ARCO IRIS - G. STEWART HOWIE, Pla del Bon Repòs
+  165:[38.3512,-0.4488],
+  // Camara 166: C/ MISTRAL, Pla del Bon Repòs
+  166:[38.3508,-0.4492],
+  // Camara 167: C/ G. STEWART HOWIE - C/ MISTRAL, Pla del Bon Repòs
+  167:[38.3505,-0.4495],
+  // Camara 168: ANT. PESETA - C/ DEL FRANCO, Pla del Bon Repòs
+  168:[38.3518,-0.4478],
+  // Camara 169: ROT. ANT. PESETA - A 31, Pla del Bon Repòs
+  169:[38.3520,-0.4475],
+  // Camara 170: C/ ANT. PESETA - CNO. VIEJO, Pla del Bon Repòs
+  170:[38.3522,-0.4472],
+  // Camara 171: AVDA. DEL EURO - C/ DEL MARCO, Pla del Bon Repòs
+  171:[38.3525,-0.4468],
+  // Camara 172: AVDA. DEL EURO - C/ DE LA LIBRA, Pla del Bon Repòs
+  172:[38.3528,-0.4465],
+  // Camara 173: ROT. C/ ARCO IRIS / C/ G. STEWART, Pla del Bon Repòs
+  173:[38.3513,-0.4487],
+  // Camara 174: C/ G. STEWART HOWIE / C/ MISTRAL, Pla del Bon Repòs
+  174:[38.3506,-0.4494],
+  // Camara 175: C/ G. STEWART HOWIE / C/ MISTRAL (duplicate), Pla del Bon Repòs
+  175:[38.3504,-0.4496],
+  // Camara 176-179: Additional Agua Amarga cameras
+  176:[38.3348,-0.4348], 177:[38.3342,-0.4352],
+  178:[38.3340,-0.4355], 179:[38.3345,-0.4350]
 };
 
 // Merge coords into CAMERAS
