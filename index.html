@@ -275,6 +275,30 @@
     letter-spacing: 1px;
   }
 
+  .checked-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 5;
+    background: rgba(0,255,136,0.2);
+    border: 1px solid #00ff88;
+    color: #00ff88;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    letter-spacing: 1px;
+    pointer-events: none;
+  }
+
+  .cam-box.checked {
+    border-color: rgba(0,255,136,0.4);
+  }
+
+  .cam-box.checked .etiqueta-barrio {
+    border-left: 3px solid #00ff88;
+  }
+
   .etiqueta {
     background: rgba(2,6,23,0.88);
     border-bottom: 1px solid var(--border);
@@ -1775,10 +1799,12 @@ function render() {
     const timestamp = Date.now();
     slice.forEach(cam => {
       const srcWithTs = cam.url + '&t=' + timestamp;
+      const checked = isCamChecked(cam.num);
       const box = document.createElement('div');
-      box.className = 'cam-box';
+      box.className = 'cam-box' + (checked ? ' checked' : '');
       box.innerHTML = `
         <div class="zoom-hint">⛶ AMPLIAR</div>
+        ${checked ? '<div class="checked-badge">YA CHEKEADO</div>' : ''}
         <div class="etiqueta">
           <span class="etiqueta-num">#${String(cam.num).padStart(3,'0')} 📍</span>
           <span class="etiqueta-nombre">${cam.calle}</span>
@@ -2178,6 +2204,19 @@ let editorMode = false;
 let editorMarker = null;
 let editorCam = null;
 
+// Sistema de cámaras chequeadas (localStorage)
+function getCheckedCams() {
+  try { return JSON.parse(localStorage.getItem('checkedCams') || '{}'); } catch { return {}; }
+}
+function markCamChecked(num) {
+  const c = getCheckedCams();
+  c[num] = Date.now();
+  localStorage.setItem('checkedCams', JSON.stringify(c));
+}
+function isCamChecked(num) {
+  return !!getCheckedCams()[num];
+}
+
 function openMap() {
   const overlay = document.getElementById('map-overlay');
   overlay.classList.add('open');
@@ -2239,10 +2278,11 @@ function refreshMapCams() {
     const marker = L.marker([cam.lat, cam.lng], { icon: camIcon }).addTo(map);
 
     const imgSrc = cam.url + '&t=' + Date.now();
+    const checked = isCamChecked(cam.num);
     const popupHtml = `
       <div class="cam-popup">
         <div class="cam-popup-title">#${String(cam.num).padStart(3,'0')} · ${cam.calle}</div>
-        <div class="cam-popup-barrio">📍 ${cam.barrio.toUpperCase()}</div>
+        <div class="cam-popup-barrio">📍 ${cam.barrio.toUpperCase()} ${checked ? '<span style="color:#00ff88;font-weight:bold;">YA CHEKEADO</span>' : ''}</div>
         <img class="cam-popup-img" src="${imgSrc}" alt="${cam.calle}"
              onclick="openFullscreen('${imgSrc}', '#${String(cam.num).padStart(3,'0')} · ${cam.calle.replace(/'/g,"\\'")}')">
         <div class="cam-popup-btns">
@@ -2323,12 +2363,16 @@ function saveEditorCoords() {
   editorCam.lat = parseFloat(ll.lat.toFixed(6));
   editorCam.lng = parseFloat(ll.lng.toFixed(6));
 
+  // Marcar como chequeada
+  markCamChecked(editorCam.num);
+
   const btn = document.querySelector('.map-editor-actions .map-btn');
-  btn.textContent = '✅ GUARDADO';
+  btn.textContent = '✅ CHEKEADO';
   btn.style.color = '#00ff88';
   setTimeout(() => { btn.textContent = '💾 GUARDAR'; btn.style.color = ''; }, 1500);
 
   refreshMapCams();
+  render();
 }
 
 function cancelEditor() {
