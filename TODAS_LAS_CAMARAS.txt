@@ -1,0 +1,333 @@
+# LISTA COMPLETA DE CAMARAS - Alicante
+# Fuente: movilidad.alicante.es/camaras
+# Total: 178 camaras (174 originales + 4 nuevas C63-C66)
+
+# === ZONA C01 - Plaza de la Estrella ===
+C01F2.jpg  | Avda. Maisonnave | Centro
+C01F3.jpg  | Oscar Esplá (Plaza Estrella) | Benalúa
+C01F4.jpg  | Avda. Aguilera | San Blas
+C01M1.jpg  | Plaza de la Estrella | Centro
+C01M5.jpg  | Oscar Esplá | Benalúa
+
+# === ZONA C02 - Oscar Esplá - Catedrático Soler ===
+C02F2.jpg  | E. Sempere - Oscar Esplá | Benalúa
+C02F3.jpg  | L. Casanova - Oscar Esplá | Benalúa
+C02F4.jpg  | Cat. Soler - Oscar Esplá | Benalúa
+C02F5.jpg  | Oscar Esplá | Benalúa
+C02F6.jpg  | Óscar Esplá - Cat. Soler | Benalúa
+
+# === ZONA C03 - Plaza Puerta del Mar ===
+C03M1.jpg  | Plaza Puerta del Mar | Centro
+C03M2.jpg  | Av. Mártires de la Libertad | Centro
+C03M3.jpg  | Av. Juan Bautista Lafora | Centro
+C03M4.jpg  | Salida Puerto | Centro
+
+# === ZONA C04 - Av. Denia - Deportista Alejandra Quereda ===
+C04F2.jpg  | Avda. de Denia | Vistahermosa
+C04F3.jpg  | Av. A. Ramos Carratalá | Vistahermosa
+C04F4.jpg  | C/ Dep. Alejandra Quereda | Vistahermosa
+C04F5.jpg  | Avda. de Denia | Vistahermosa
+
+# === ZONA C05 - Avda. Condomina - Avda. Costablanca ===
+C05M1.jpg  | Avda. Costablanca | Playa San Juan
+C05F2.jpg  | Avda. Condomina | Playa San Juan
+
+# === ZONA C06 - Av. Denia - Av. Padre Esplá ===
+C06M2.jpg  | Avda. Denia | Juan XXIII
+C06M3.jpg  | Avda. Padre Esplá | Juan XXIII
+C06M4.jpg  | Avda. Denia | Juan XXIII
+C06M5.jpg  | C/ del Padre Arrupe | Juan XXIII
+
+# === ZONA C07 - Avda. Novelda - Avda. Conde Lumiares ===
+C07F2.jpg  | Conde Lumiares - Av. Alcoy | Altozano
+C07M1.jpg  | Avda. Novelda | Los Ángeles
+
+# === ZONA C08 - Gran Vía - Maestro Alonso ===
+C08F2.jpg  | Gran Vía | Altozano
+C08F3.jpg  | C/ del Maestro Alonso | Altozano
+C08F4.jpg  | Gran Vía | Altozano
+C08F5.jpg  | Gran Vía - Maestro Alonso | Altozano
+C08F6.jpg  | C/ del Maestro Alonso | Altozano
+
+# === ZONA C09 - Plaza de España ===
+C09F2.jpg  | C/ Pintor Murillo | Carolinas Bajas
+C09M3.jpg  | Avda. de Alcoy | Carolinas Bajas
+C09M4.jpg  | Avda. Jijona | Carolinas Bajas
+
+# === ZONA C10 - Plaza de Los Luceros ===
+C10F2.jpg  | Avda. de la Estación | Centro
+
+# === ZONA C11 - Gran Vía - Avda. Orihuela ===
+C11M1.jpg  | Gran Vía - Av. Orihuela | Carolinas Altas
+C11M2.jpg  | Gran Vía - Av. Orihuela | Carolinas Altas
+C11M3.jpg  | Avda. Dr. Jiménez Díaz | Carolinas Altas
+C11M4.jpg  | Av. Orihuela | Carolinas Altas
+C11M5.jpg  | C/ Orión | Carolinas Altas
+
+# === ZONA C12 - Av. Salamanca - Av. Benito Pérez Galdós ===
+C12F2.jpg  | Avda. Salamanca | Centro
+C12F3.jpg  | C/ Benito Pérez Galdós | Centro
+
+# === ZONA C13 - Gran Vía - Teulada ===
+C13M2.jpg  | Avda. Dr. Jiménez Díaz | Ciudad Jardín
+C13M3.jpg  | C/ Teulada - E.F. Rico Pérez | Ciudad Jardín
+C13M4.jpg  | Avda. Santa Pola | Los Ángeles
+C13M5.jpg  | Bulevar de Teulada | Ciudad Jardín
+
+# === ZONA C14 - Av. Pintor Xavier Soler / Gran Vía - Avda. Denia ===
+C14M2.jpg  | Avda. Pintor Xavier Soler | Juan XXIII
+C14M3.jpg  | Avda. Denia | Juan XXIII
+C14M4.jpg  | Avda. Denia | Juan XXIII
+
+# === ZONA C15 - Alfonso el Sabio - Rambla - Calderón ===
+C15F2.jpg  | Avda. Alfonso X El Sabio | Centro
+C15F3.jpg  | C/ Calderón de la Barca | Centro
+C15F4.jpg  | A. El Sabio - San Vicente | Centro
+C15F5.jpg  | Rambla de Méndez Núñez | Centro
+
+# === ZONA C16 - Rambla - San Fernando ===
+C16F2.jpg  | Rambla de Méndez Núñez | Centro
+C16F3.jpg  | C/ San Fernando | San Fernando
+
+# === ZONA C17 - Dr. Gadea - Reyes Católicos ===
+C17F2.jpg  | Avda. Dr. Gadea | Centro
+C17F3.jpg  | C/ Reyes Católicos | Centro
+
+# === ZONA C18 - Avda. Elche - Calle México ===
+C18M2.jpg  | Avda. Elche | Polígono de Babel
+C18M3.jpg  | Avda. Elche - N 332 | San Gabriel
+C18M4.jpg  | C/ México | Polígono de Babel
+
+# === ZONA C19 - Rotonda del Barco ===
+C19M2.jpg  | A 31 | Polígono de Babel
+C19M4.jpg  | C/ México | San Gabriel
+C19F3.jpg  | Gran Vía | Polígono de Babel
+
+# === ZONA C20 - Plaza Galicia ===
+C20F2.jpg  | Mártires de la Libertad | Centro
+C20F3.jpg  | C/ Portugal | Centro
+
+# === ZONA C21 - Avda. Orihuela - Vía Parque (Playa San Juan) ===
+C21F2.jpg  | Cámara C21F2 | Playa San Juan
+C21F3.jpg  | N 330 | Playa San Juan
+C21F4.jpg  | Cámara C21F4 | Playa San Juan
+C21F5.jpg  | C/ Río Muni | Playa San Juan
+
+# === ZONA C22 - Gran Vía - Alcalde Lorenzo Carbonell ===
+C22M2.jpg  | Alcalde Lorenzo Carbonell | Florida Alta
+C22M3.jpg  | A. L. Carbonell - Cat. Soler | Florida Alta
+C22M4.jpg  | C/ México | Polígono de Babel
+
+# === ZONA C23 - Glorieta Carolina Pascual ===
+C23M1.jpg  | C/ Caja de Ahorros | Playa San Juan
+C23F2.jpg  | Avda. Vicente Hipólito | Playa San Juan
+
+# === ZONA C24 - Gran Vía - Vicente Blasco Ibáñez ===
+C24F2.jpg  | Gran Vía - Puente Rojo | San Fernando
+C24M3.jpg  | Avda. Vnte. Blasco Ibáñez | Florida Alta
+
+# === ZONA C25 - Vía Parque - Avda. Novelda ===
+C25M2.jpg  | Avda. Jaime I | Ciudad Jardín
+C25M3.jpg  | Av. Novelda - Av. Unicef | Rabasa
+C25M4.jpg  | Avda. Novelda | Los Ángeles
+C25M5.jpg  | Avda. Unicef | Rabasa
+
+# === ZONA C26 - Paso inferior Avda. Denia - La Goteta ===
+C26F1.jpg  | Entrada Ciudad | Playa San Juan
+C26F2.jpg  | Entrada Ciudad | Playa San Juan
+C26F3.jpg  | Salida Ciudad | Playa San Juan
+C26F4.jpg  | Salida Ciudad | Playa San Juan
+
+# === ZONA C27 - Avda. Universidad - Fortuny ===
+C27M2.jpg  | C/ Fortuny | Ciudad Jardín
+C27M4.jpg  | Avda. Universidad | Ciudad Jardín
+C27M5.jpg  | Av. Universidad - Fortuny | Ciudad Jardín
+
+# === ZONA C28 - Avda. Elche - Desaladora ===
+C28F2.jpg  | N 332 | El Palmeral
+C28F3.jpg  | Ctra. del Saladar | El Palmeral
+
+# === ZONA C29 - Gran Vía - Isla de Corfú ===
+C29M1.jpg  | Dr. Jiménez Díaz | San Fernando
+C29M2.jpg  | Gran Vía - C/ Isla de Corfú | San Fernando
+C29M3.jpg  | Dr. Jiménez Díaz | San Fernando
+C29M4.jpg  | Dr. Jiménez Díaz | San Fernando
+C29M5.jpg  | Marcelino Champagnat | San Fernando
+C29M6.jpg  | Cardenal Francisco Álvarez | San Fernando
+
+# === ZONA C30 - Avda. Denia - Avda. Villajoyosa ===
+C30F2.jpg  | Av. Denia - Av. Villajoyosa | Nou Alacant
+C30F3.jpg  | Avda. Juan Bautista Lafora | Nou Alacant
+C30M4.jpg  | Avda. Denia | Pla del Bon Repòs
+
+# === ZONA C31 - Avda. Elche - Paseo Óscar Esplá ===
+C31F2.jpg  | Avda. Elche | Polígono de Babel
+C31F3.jpg  | Casa del Mediterráneo | El Palmeral
+C31F4.jpg  | Avda. Loring | El Palmeral
+
+# === ZONA C32 - Vía Parque - Gastón Castelló ===
+C32M2.jpg  | C/ Poeta Pedro Salinas | Ciudad Jardín
+C32M3.jpg  | C/ José Luis Barceló | Ciudad Jardín
+C32M4.jpg  | C/ Maestro Alonso | Altozano
+C32M5.jpg  | Avda. Gastón Castelló | Ciudad Jardín
+C32M6.jpg  | Avda. Unicef | Ciudad Jardín
+
+# === ZONA C33 - Villafranqueza - Gastón Castelló ===
+C33M1.jpg  | C/ del Cuarzo | Ciudad Jardín
+C33M2.jpg  | Villafranqueza | Villafranqueza
+C33M3.jpg  | C/ Pintor Gastón Castelló | Ciudad Jardín
+C33M4.jpg  | Avda. Baronía de Polop | Ciudad Jardín
+
+# === ZONA C34 - Avda. Novelda - Fortuny ===
+C34F2.jpg  | Av. Novelda - San Vicente | Rabasa
+C34F3.jpg  | Avda. Baronía de Polop | Rabasa
+C34F4.jpg  | Avda. Novelda | Rabasa
+C34F5.jpg  | C/ Fortuny | Ciudad Jardín
+
+# === ZONA C35 - Calle Salamanca - Avda. Estación ===
+C35F2.jpg  | Salamanca - Estación | Centro
+C35F4.jpg  | Salamanca - Estación | Centro
+
+# === ZONA C36 - Avda. Pérez Galdós - Gral. Marvá ===
+C36F1.jpg  | B. P. Galdós - Salamanca | Centro
+C36F2.jpg  | B. P. Galdós - Pza. España | Centro
+C36F3.jpg  | B. P. Galdós - Gral. Marvá | Centro
+C36F4.jpg  | B. P. Galdós - Gral. Marvá | Centro
+
+# === ZONA C37 - Teulada - Avda. Universidad ===
+C37F2.jpg  | Avda. Teulada | Ciudad Jardín
+C37F3.jpg  | Vía Parque - Jaime I | Ciudad Jardín
+C37F4.jpg  | Avda. Universidad | Ciudad Jardín
+C37F5.jpg  | Avda. Jaime I | Ciudad Jardín
+C37F6.jpg  | Avda. Bulevar de Teulada | Ciudad Jardín
+
+# === ZONA C38 - Vicente Hipólito - Avda. De Las Naciones ===
+C38F2.jpg  | Avda. de las Naciones | Playa San Juan
+C38F3.jpg  | Avda. de Oviedo | Playa San Juan
+C38F4.jpg  | Avda. Pintor Pérez Gil | Playa San Juan
+C38F5.jpg  | Avda. Vicente Hipólito | Playa San Juan
+
+# === ZONA C39 - Gran Vía - Av. Novelda ===
+C39F2.jpg  | Gran Vía - Avda. Colombia | Altozano
+C39F3.jpg  | Avda. Novelda | Los Ángeles
+C39F4.jpg  | Gran Vía - Av. Buenos Aires | Los Ángeles
+C39F5.jpg  | Gran Vía - Avda. Novelda | Los Ángeles
+
+# === ZONA C40 - Avda. Elche - EUIPO ===
+C40F2.jpg  | Avda. Elche | San Gabriel
+C40F3.jpg  | Avda. Elche - N 332 | San Gabriel
+C40F4.jpg  | Av. Elche - J. C. Combaldieu | San Gabriel
+
+# === ZONA C41 - Vía Parque - Isla de Corfú ===
+C41F2.jpg  | Fiestas P. y Tradicionales | Ciudad Jardín
+C41F3.jpg  | Fiestas P. y Tradicionales | Ciudad Jardín
+C41F4.jpg  | C/ Isla de Corfú | San Fernando
+C41F5.jpg  | Dpta. Isabel Fernández | Ciudad Jardín
+
+# === ZONA C42 - Vía Parque - Caja de Ahorros ===
+C42F1.jpg  | Caja de Ahorros - Av. Denia | Playa San Juan
+C42F2.jpg  | Caja de Ahorros - Playas | Playa San Juan
+
+# === ZONA C43 - Vía Parque - Jaime I ===
+C43F2.jpg  | Avd. Jaime I - Teulada | Ciudad Jardín
+C43F3.jpg  | Jaime I - Fiestas Tradicionales | Ciudad Jardín
+C43F4.jpg  | Jaime I - Judoka JA Valverde | Ciudad Jardín
+
+# === ZONA C44 - Avda. Naciones - Avda. Costablanca ===
+C44M1.jpg  | Avda. Naciones | Playa San Juan
+C44M2.jpg  | Avda. Costablanca | Playa San Juan
+
+# === ZONA C46 - Villajoyosa - Sol Naciente ===
+C46M1.jpg  | Villajoyosa - Sol Naciente | Playa San Juan
+C46M2.jpg  | Villajoyosa - Pl. Isleta | Playa San Juan
+
+# === ZONA C48 - Avda. Denia - Enebro ===
+C48M1.jpg  | Avda. de Denia - Santa Faz | Santa Faz
+C48M2.jpg  | Avda. Denia - Acceso A-70 | Vistahermosa
+
+# === ZONA C49 - Avda. Denia - Acceso Vistahermosa ===
+C49M2.jpg  | Av. Denia - Torres de la Huerta | Vistahermosa
+C49M3.jpg  | Avda. Denia - Acceso A-70 | Vistahermosa
+
+# === ZONA C50 - Avda. Elche - Federico Mayo ===
+C50M1.jpg  | Avda. de Elche - C/ Federico Mayo | San Gabriel
+
+# === ZONA C51 - Plaza Castalla ===
+C51M2.jpg  | Avda. A. Ramos Carratalá | Vistahermosa
+C51M3.jpg  | C/ Montesinos - Pl. Castalla | Carolinas Bajas
+
+# === ZONA C52 - Plaza Milenio ===
+C52M2.jpg  | Plaza del Milenio | Garbinet
+C52M3.jpg  | C/ Bellea del Foc | Garbinet
+C52M4.jpg  | C/ Pintor Xavier Soler | Garbinet
+
+# === ZONA C54 - Dr. Rico - Campo de Mirra ===
+C54M1.jpg  | C/ Dr. Rico - Campo de Mirra | Carolinas Bajas
+
+# === ZONA C55 - Vázquez de Mella ===
+C55M1.jpg  | C/ Vázquez de Mella | Carolinas Bajas
+
+# === ZONA C56 - Avda. Denia - Avda. Albufereta ===
+C56F1.jpg  | Avda. Albufereta | Albufereta
+
+# === ZONA C60 - Carretera de Ocaña 1 (Polígono Llano del Espartal) ===
+(Sin camaras activas detectadas)
+
+# === ZONA C61 - Carretera de Ocaña 2 (Polígono Llano del Espartal) ===
+(Sin camaras activas detectadas)
+
+# === ZONA C62 - Agua Amarga - N332 ===
+C62M1.jpg  | Agua Amarga - N 332 | Agua Amarga
+C62M2.jpg  | A. Amarga - Anta. Moreno | Agua Amarga
+
+# === ZONA C63 - Rotonda Agua Amarga con C/ Antoñita Moreno ===
+C63M1.jpg  | Rotonda Agua Amarga - C/ Antoñita Moreno | Agua Amarga  [NUEVA]
+
+# === ZONA C64 - CN340 con C/ Tormos 1 (Polígono Agua Amarga) ===
+C64M1.jpg  | CN340 - C/ Tormos 1 | Agua Amarga  [NUEVA]
+
+# === ZONA C65 - CN340 con C/ Tormos 2 (Polígono Agua Amarga) ===
+C65M1.jpg  | CN340 - C/ Tormos 2 | Agua Amarga  [NUEVA]
+
+# === ZONA C66 - CN340 con C/ Antoñita Moreno ===
+C66M1.jpg  | CN340 - C/ Antoñita Moreno | Agua Amarga  [NUEVA]
+
+# === ZONA C67 - Rotonda C/ Arco Iris con C/ Guillermo Stewart Howie ===
+C67M1.jpg  | Arco Iris - G. Stewart Howie | Pla del Bon Repòs
+C67M2.jpg  | C/ Arco Iris - Salida A 31 | Pla del Bon Repòs
+C67M3.jpg  | Arco Iris - G. Stewart Howie | Pla del Bon Repòs
+
+# === ZONA C68 - C/ Mistral ===
+C68M1.jpg  | C/ Mistral | Pla del Bon Repòs
+
+# === ZONA C69 - C/ Guillermo Stewart Howie con C/ Mistral ===
+C69M1.jpg  | C/ G. Stewart Howie - C/ Mistral | Pla del Bon Repòs
+
+# === ZONA C70 - Rotonda Antigua Peseta con C/ Del Franco ===
+C70M1.jpg  | Ant. Peseta - C/ del Franco | Pla del Bon Repòs
+C70M2.jpg  | Rot. Ant. Peseta - A 31 | Pla del Bon Repòs
+
+# === ZONA C71 - C/ Antigua Peseta con Camino Viejo ===
+C71M1.jpg  | C/ Ant. Peseta - Cno. Viejo | Pla del Bon Repòs
+
+# === ZONA C72 - Avda. del Euro con C/ del Marco ===
+C72M1.jpg  | Avda. del Euro - C/ del Marco | Pla del Bon Repòs
+
+# === ZONA C73 - Avda. del Euro con C/ de La Libra ===
+C73M1.jpg  | Avda. del Euro - C/ de La Libra | Pla del Bon Repòs
+
+# ============================================================
+# RESUMEN POR ZONA:
+# C01: 5 | C02: 5 | C03: 4 | C04: 4 | C05: 2 | C06: 4
+# C07: 2 | C08: 5 | C09: 3 | C10: 1 | C11: 5 | C12: 2
+# C13: 4 | C14: 3 | C15: 4 | C16: 2 | C17: 2 | C18: 3
+# C19: 3 | C20: 2 | C21: 4 | C22: 3 | C23: 2 | C24: 2
+# C25: 4 | C26: 4 | C27: 3 | C28: 2 | C29: 6 | C30: 3
+# C31: 3 | C32: 5 | C33: 4 | C34: 4 | C35: 2 | C36: 4
+# C37: 5 | C38: 4 | C39: 4 | C40: 3 | C41: 4 | C42: 2
+# C43: 3 | C44: 2 | C46: 2 | C48: 2 | C49: 2 | C50: 1
+# C51: 2 | C52: 3 | C54: 1 | C55: 1 | C56: 1 | C62: 2
+# C63: 1 [NUEVA] | C64: 1 [NUEVA] | C65: 1 [NUEVA] | C66: 1 [NUEVA]
+# C67: 3 | C68: 1 | C69: 1 | C70: 2 | C71: 1 | C72: 1 | C73: 1
+# TOTAL: 174 camaras (+ 4 nuevas = 178)
+# ============================================================

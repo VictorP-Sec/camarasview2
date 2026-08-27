@@ -6,6 +6,8 @@
 <title>SISTEMA DE VIDEOVIGILANCIA — ALICANTE</title>
 <link rel="icon" href="logo.ico" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   :root {
@@ -738,6 +740,221 @@
     border-top: 1px solid var(--border);
     letter-spacing: 2px;
   }
+
+  /* ═══ MAP STYLES ═══ */
+  .map-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--bg);
+    flex-direction: column;
+  }
+  .map-overlay.open { display: flex; }
+
+  .map-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    z-index: 10;
+  }
+
+  .map-toolbar-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .map-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: rgba(0,255,231,0.08);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 14px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .map-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .map-btn.active { background: rgba(0,255,231,0.15); border-color: var(--accent); color: var(--accent); }
+  .map-btn.close-btn { border-color: var(--accent2); color: var(--accent2); }
+  .map-btn.close-btn:hover { background: rgba(255,45,85,0.15); }
+
+  .map-container {
+    flex: 1;
+    position: relative;
+  }
+
+  #leaflet-map {
+    width: 100%;
+    height: 100%;
+    background: #010810;
+  }
+
+  .cam-popup {
+    font-family: var(--mono);
+    min-width: 220px;
+  }
+  .cam-popup-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #020617;
+    margin-bottom: 4px;
+  }
+  .cam-popup-barrio {
+    font-size: 10px;
+    color: #666;
+    margin-bottom: 6px;
+  }
+  .cam-popup-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    margin-bottom: 6px;
+    cursor: pointer;
+  }
+  .cam-popup-img:hover { opacity: 0.85; }
+  .cam-popup-btns {
+    display: flex;
+    gap: 4px;
+  }
+  .cam-popup-btn {
+    flex: 1;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 8px;
+    border: 1px solid #0f3460;
+    background: #f8f8f8;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+  }
+  .cam-popup-btn:hover { background: #e0e0e0; }
+  .cam-popup-btn.primary { background: #0f3460; color: #fff; }
+  .cam-popup-btn.primary:hover { background: #1a4a7a; }
+
+  .map-editor-panel {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    padding: 12px 16px;
+    z-index: 1000;
+    max-width: 300px;
+    display: none;
+  }
+  .map-editor-panel.open { display: block; }
+  .map-editor-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .map-editor-cam {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .map-editor-coords {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #4a7fa5;
+    margin-bottom: 8px;
+  }
+  .map-editor-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .leaflet-popup-content-wrapper {
+    background: #fff !important;
+    border-radius: 0 !important;
+    border: 2px solid #0f3460 !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+  }
+  .leaflet-popup-tip {
+    background: #fff !important;
+    border: 2px solid #0f3460 !important;
+    border-top: none !important;
+    border-left: none !important;
+  }
+  .leaflet-popup-close-button {
+    color: #0f3460 !important;
+    font-size: 18px !important;
+  }
+
+  .map-cam-count {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #4a7fa5;
+    letter-spacing: 1px;
+    margin-left: auto;
+  }
+
+  /* Full screen modal */
+  .fullscreen-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10001;
+    background: rgba(2,6,23,0.95);
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .fullscreen-overlay.open { display: flex; }
+  .fullscreen-box {
+    position: relative;
+    width: 95vw;
+    max-width: 1400px;
+  }
+  .fullscreen-img {
+    width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border: 1px solid var(--accent);
+  }
+  .fullscreen-close {
+    position: absolute;
+    top: -30px;
+    right: 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--accent2);
+    border: none;
+    color: #fff;
+    padding: 4px 16px;
+    cursor: pointer;
+    letter-spacing: 2px;
+  }
+  .fullscreen-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(2,6,23,0.8);
+    padding: 8px 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
 </style>
 </head>
 <body>
@@ -770,6 +987,8 @@
     <span class="search-icon">🔍</span>
     <input class="search-input" type="text" id="search-input" placeholder="BUSCAR POR CALLE...">
   </div>
+
+  <button class="map-btn" id="map-toggle-btn" onclick="openMap()">🗺️ MAPA</button>
 
   <select class="barrio-select" id="barrio-select">
     <option value="">▾ TODOS LOS BARRIOS</option>
@@ -866,6 +1085,38 @@
       <div class="modal-info" id="modal-info">—</div>
       <div class="modal-barrio-tag" id="modal-barrio">—</div>
     </div>
+  </div>
+</div>
+
+<!-- ═══ MAP OVERLAY ═══ -->
+<div class="map-overlay" id="map-overlay">
+  <div class="map-toolbar">
+    <div class="map-toolbar-title">🗺️ MAPA DE CÁMARAS</div>
+    <button class="map-btn" onclick="refreshMapCams()">🔄 REFRESCAR</button>
+    <button class="map-btn" id="editor-toggle-btn" onclick="toggleEditor()">📍 EDITOR</button>
+    <div class="map-cam-count" id="map-cam-count">—</div>
+    <button class="map-btn close-btn" onclick="closeMap()">✕ CERRAR</button>
+  </div>
+  <div class="map-container">
+    <div id="leaflet-map"></div>
+    <div class="map-editor-panel" id="editor-panel">
+      <div class="map-editor-title">📍 EDITOR DE POSICIÓN</div>
+      <div class="map-editor-cam" id="editor-cam-name">—</div>
+      <div class="map-editor-coords" id="editor-coords">—</div>
+      <div class="map-editor-actions">
+        <button class="map-btn" onclick="saveEditorCoords()" style="flex:1;">💾 GUARDAR</button>
+        <button class="map-btn" onclick="cancelEditor()" style="flex:1;">CANCELAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FULLSCREEN PREVIEW ═══ -->
+<div class="fullscreen-overlay" id="fullscreen-overlay" onclick="closeFullscreen()">
+  <div class="fullscreen-box" onclick="event.stopPropagation()">
+    <button class="fullscreen-close" onclick="closeFullscreen()">✕ CERRAR</button>
+    <img class="fullscreen-img" id="fullscreen-img" src="" alt="Preview completa">
+    <div class="fullscreen-label" id="fullscreen-label">—</div>
   </div>
 </div>
 
@@ -1051,6 +1302,61 @@ const CAMERAS = [
   {num:178, calle:"CN340 - C/ TORMOS 2",                     barrio:"Agua Amarga",              url:"https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C65M1.jpg"},
   {num:179, calle:"CN340 - C/ ANTOÑITA MORENO",              barrio:"Agua Amarga",              url:"https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C66M1.jpg"},
 ];
+
+// ─── COORDENADAS DE CÁMARAS (lat/lng) ───
+const CAM_COORDS = {
+  2:[38.3535,-0.4712], 3:[38.3508,-0.4748], 4:[38.3475,-0.4730], 5:[38.3485,-0.4718],
+  6:[38.3555,-0.4658], 7:[38.3540,-0.4695], 8:[38.3498,-0.4475], 9:[38.3538,-0.4700],
+  10:[38.3490,-0.4710], 11:[38.3460,-0.4740], 12:[38.3510,-0.4755], 13:[38.3505,-0.4510],
+  14:[38.3500,-0.4495], 15:[38.3505,-0.4775], 16:[38.3480,-0.4722], 17:[38.3510,-0.4780],
+  18:[38.3508,-0.4768], 19:[38.3478,-0.4735], 20:[38.3570,-0.4620], 21:[38.3482,-0.4725],
+  22:[38.3478,-0.4715], 23:[38.3550,-0.4640], 24:[38.3502,-0.4750], 25:[38.3560,-0.4610],
+  26:[38.3565,-0.4600], 27:[38.3500,-0.4745], 28:[38.3500,-0.4752], 29:[38.3500,-0.4520],
+  30:[38.3488,-0.4775], 31:[38.3490,-0.4780], 32:[38.3495,-0.4778], 33:[38.3485,-0.4772],
+  34:[38.3492,-0.4770], 35:[38.3555,-0.4662], 36:[38.3550,-0.4650], 37:[38.3495,-0.4765],
+  38:[38.3435,-0.4830], 39:[38.3480,-0.4850], 40:[38.3515,-0.4900], 41:[38.3465,-0.4735],
+  42:[38.3475,-0.4740], 43:[38.3518,-0.4895], 44:[38.3460,-0.4730], 45:[38.3435,-0.4815],
+  46:[38.3438,-0.4835], 47:[38.3520,-0.4890], 48:[38.3522,-0.4885], 49:[38.3518,-0.4878],
+  50:[38.3512,-0.4898], 51:[38.3515,-0.4888], 52:[38.3440,-0.4800], 53:[38.3445,-0.4805],
+  54:[38.3442,-0.4808], 55:[38.3440,-0.4820], 56:[38.3558,-0.4655], 57:[38.3462,-0.4742],
+  58:[38.3448,-0.4810], 59:[38.3447,-0.4802], 60:[38.3443,-0.4798], 61:[38.3455,-0.4795],
+  62:[38.3492,-0.4760], 63:[38.3445,-0.4815], 64:[38.3438,-0.4825], 65:[38.3450,-0.4790],
+  66:[38.3442,-0.4795], 67:[38.3452,-0.4788], 68:[38.3458,-0.4835], 69:[38.3460,-0.4745],
+  70:[38.3590,-0.4400], 71:[38.3462,-0.4738], 72:[38.3575,-0.4615], 73:[38.3580,-0.4580],
+  74:[38.3585,-0.4570], 75:[38.3552,-0.4660], 76:[38.3590,-0.4560], 77:[38.3565,-0.4595],
+  78:[38.3578,-0.4575], 79:[38.3588,-0.4565], 80:[38.3582,-0.4585], 81:[38.3600,-0.4550],
+  82:[38.3580,-0.4555], 83:[38.3575,-0.4560], 84:[38.3570,-0.4585], 85:[38.3588,-0.4558],
+  86:[38.3585,-0.4562], 87:[38.3572,-0.4610], 88:[38.3540,-0.4550], 89:[38.3575,-0.4600],
+  90:[38.3605,-0.4545], 91:[38.3545,-0.4555], 92:[38.3650,-0.4400], 93:[38.3495,-0.4775],
+  94:[38.3608,-0.4540], 95:[38.3610,-0.4535], 96:[38.3568,-0.4590], 97:[38.3602,-0.4548],
+  98:[38.3562,-0.4592], 99:[38.3560,-0.4598], 100:[38.3568,-0.4605], 101:[38.3580,-0.4590],
+  102:[38.3480,-0.4720], 103:[38.3785,-0.4205], 104:[38.3780,-0.4210], 105:[38.3790,-0.4200],
+  106:[38.3788,-0.4208], 107:[38.3582,-0.4588], 108:[38.3578,-0.4592], 109:[38.3575,-0.4608],
+  110:[38.3430,-0.4800], 111:[38.3420,-0.4790], 112:[38.3425,-0.4795], 113:[38.3600,-0.4405],
+  114:[38.3595,-0.4410], 115:[38.3620,-0.4350], 116:[38.3598,-0.4408], 117:[38.3580,-0.4420],
+  118:[38.3602,-0.4402], 119:[38.3575,-0.4425], 120:[38.3700,-0.4300], 121:[38.3548,-0.4552],
+  122:[38.3542,-0.4558], 123:[38.3538,-0.4555], 124:[38.3545,-0.4548], 125:[38.3540,-0.4550],
+  126:[38.3520,-0.4480], 127:[38.3585,-0.4415], 128:[38.3485,-0.4460], 129:[38.3490,-0.4455],
+  130:[38.3502,-0.4490], 131:[38.3495,-0.4505], 132:[38.3488,-0.4450], 133:[38.3482,-0.4465],
+  134:[38.3498,-0.4500], 135:[38.3400,-0.4400], 136:[38.3405,-0.4405], 137:[38.3402,-0.4398],
+  138:[38.3408,-0.4402], 139:[38.3480,-0.4470], 140:[38.3575,-0.4350], 141:[38.3570,-0.4355],
+  142:[38.3432,-0.4792], 143:[38.3435,-0.4788], 144:[38.3790,-0.4215], 145:[38.3792,-0.4218],
+  146:[38.3788,-0.4212], 147:[38.3785,-0.4208], 148:[38.3800,-0.4200], 149:[38.3850,-0.4150],
+  150:[38.3805,-0.4195], 151:[38.3795,-0.4202], 152:[38.3802,-0.4198], 153:[38.3808,-0.4190],
+  154:[38.3805,-0.4192], 155:[38.3798,-0.4200], 156:[38.3802,-0.4195], 157:[38.3855,-0.4145],
+  158:[38.3800,-0.4200], 159:[38.3792,-0.4205], 160:[38.3795,-0.4198], 161:[38.3798,-0.4195],
+  162:[38.3350,-0.4350], 163:[38.3345,-0.4355], 164:[38.3515,-0.4485], 165:[38.3510,-0.4490],
+  166:[38.3512,-0.4488], 167:[38.3508,-0.4492], 168:[38.3505,-0.4495], 169:[38.3518,-0.4478],
+  170:[38.3520,-0.4475], 171:[38.3522,-0.4472], 172:[38.3525,-0.4468], 173:[38.3528,-0.4465],
+  174:[38.3513,-0.4487], 175:[38.3506,-0.4494], 176:[38.3348,-0.4348], 177:[38.3342,-0.4352],
+  178:[38.3340,-0.4355], 179:[38.3345,-0.4350]
+};
+
+// Merge coords into CAMERAS
+CAMERAS.forEach(c => {
+  const coords = CAM_COORDS[c.num];
+  if (coords) { c.lat = coords[0]; c.lng = coords[1]; }
+});
 
 const PER_PAGE = 30;
 let currentPage = 1;
@@ -1251,13 +1557,6 @@ function closeModal() {
 function handleModalClick(e) {
   if (e.target === document.getElementById('modal')) closeModal();
 }
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closeModal();
-    closeTl();
-  }
-});
 
 render();
 
@@ -1561,6 +1860,181 @@ function tlScrub(val) {
   tlFrameIdx = parseInt(val);
   showTlFrame(tlFrameIdx);
 }
+
+// ════════════════════════════════════════════
+// MAPA DE CÁMARAS (Leaflet + OpenStreetMap)
+// ════════════════════════════════════════════
+let map = null;
+let mapMarkers = [];
+let editorMode = false;
+let editorMarker = null;
+let editorCam = null;
+
+function openMap() {
+  const overlay = document.getElementById('map-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  if (!map) {
+    map = L.map('leaflet-map', {
+      zoomControl: false
+    }).setView([38.3452, -0.4810], 13);
+
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      maxZoom: 19
+    }).addTo(map);
+
+    map.on('click', function(e) {
+      if (editorMode && editorCam) {
+        editorMarker.setLatLng(e.latlng);
+        document.getElementById('editor-coords').textContent =
+          `LAT: ${e.latlng.lat.toFixed(6)} · LNG: ${e.latlng.lng.toFixed(6)}`;
+      }
+    });
+  }
+
+  setTimeout(() => map.invalidateSize(), 100);
+  refreshMapCams();
+}
+
+function closeMap() {
+  document.getElementById('map-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  if (editorMode) toggleEditor();
+}
+
+function refreshMapCams() {
+  mapMarkers.forEach(m => map.removeLayer(m));
+  mapMarkers = [];
+
+  const camsWithCoords = CAMERAS.filter(c => c.lat && c.lng);
+  document.getElementById('map-cam-count').textContent =
+    `${camsWithCoords.length} CÁMARAS EN MAPA`;
+
+  const camIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:14px;height:14px;background:#00ffe7;border:2px solid #020617;border-radius:50%;box-shadow:0 0 8px rgba(0,255,231,0.6);cursor:pointer;"></div>',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7]
+  });
+
+  camsWithCoords.forEach(cam => {
+    const marker = L.marker([cam.lat, cam.lng], { icon: camIcon }).addTo(map);
+
+    const imgSrc = cam.url + '&t=' + Date.now();
+    const popupHtml = `
+      <div class="cam-popup">
+        <div class="cam-popup-title">#${String(cam.num).padStart(3,'0')} · ${cam.calle}</div>
+        <div class="cam-popup-barrio">📍 ${cam.barrio.toUpperCase()}</div>
+        <img class="cam-popup-img" src="${imgSrc}" alt="${cam.calle}"
+             onclick="openFullscreen('${imgSrc}', '#${String(cam.num).padStart(3,'0')} · ${cam.calle.replace(/'/g,"\\'")}')">
+        <div class="cam-popup-btns">
+          <button class="cam-popup-btn primary" onclick="openFullscreen('${imgSrc}', '#${String(cam.num).padStart(3,'0')} · ${cam.calle.replace(/'/g,"\\'")}')">⛶ AMPLIAR</button>
+          <button class="cam-popup-btn" onclick="selectEditorCam(${cam.num})">📍 EDITAR</button>
+        </div>
+      </div>
+    `;
+    marker.bindPopup(popupHtml, { maxWidth: 280 });
+    marker._camNum = cam.num;
+    mapMarkers.push(marker);
+  });
+}
+
+function openFullscreen(src, label) {
+  document.getElementById('fullscreen-img').src = src;
+  document.getElementById('fullscreen-label').textContent = label;
+  document.getElementById('fullscreen-overlay').classList.add('open');
+}
+
+function closeFullscreen() {
+  document.getElementById('fullscreen-overlay').classList.remove('open');
+  document.getElementById('fullscreen-img').src = '';
+}
+
+function toggleEditor() {
+  editorMode = !editorMode;
+  const btn = document.getElementById('editor-toggle-btn');
+  const panel = document.getElementById('editor-panel');
+
+  if (editorMode) {
+    btn.classList.add('active');
+    btn.textContent = '📍 EDITOR: ON';
+    panel.classList.add('open');
+  } else {
+    btn.classList.remove('active');
+    btn.textContent = '📍 EDITOR';
+    panel.classList.remove('open');
+    editorCam = null;
+    if (editorMarker) { map.removeLayer(editorMarker); editorMarker = null; }
+  }
+}
+
+function selectEditorCam(num) {
+  const cam = CAMERAS.find(c => c.num === num);
+  if (!cam || !cam.lat) return;
+
+  editorCam = cam;
+  if (editorMarker) map.removeLayer(editorMarker);
+
+  const editIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:20px;height:20px;background:#ff2d55;border:3px solid #fff;border-radius:50%;box-shadow:0 0 12px rgba(255,45,85,0.8);cursor:move;"></div>',
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  });
+
+  editorMarker = L.marker([cam.lat, cam.lng], { icon: editIcon, draggable: true }).addTo(map);
+  editorMarker.on('dragend', function(e) {
+    const ll = e.target.getLatLng();
+    document.getElementById('editor-coords').textContent =
+      `LAT: ${ll.lat.toFixed(6)} · LNG: ${ll.lng.toFixed(6)}`;
+  });
+
+  map.setView([cam.lat, cam.lng], 17);
+
+  document.getElementById('editor-cam-name').textContent =
+    `#${String(cam.num).padStart(3,'0')} · ${cam.calle}`;
+  document.getElementById('editor-coords').textContent =
+    `LAT: ${cam.lat.toFixed(6)} · LNG: ${cam.lng.toFixed(6)}`;
+
+  if (!editorMode) toggleEditor();
+}
+
+function saveEditorCoords() {
+  if (!editorCam || !editorMarker) return;
+  const ll = editorMarker.getLatLng();
+  editorCam.lat = parseFloat(ll.lat.toFixed(6));
+  editorCam.lng = parseFloat(ll.lng.toFixed(6));
+
+  const btn = document.querySelector('.map-editor-actions .map-btn');
+  btn.textContent = '✅ GUARDADO';
+  btn.style.color = '#00ff88';
+  setTimeout(() => { btn.textContent = '💾 GUARDAR'; btn.style.color = ''; }, 1500);
+
+  refreshMapCams();
+}
+
+function cancelEditor() {
+  if (editorMarker) { map.removeLayer(editorMarker); editorMarker = null; }
+  editorCam = null;
+  document.getElementById('editor-cam-name').textContent = '—';
+  document.getElementById('editor-coords').textContent = '—';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeTl();
+    if (document.getElementById('fullscreen-overlay').classList.contains('open')) {
+      closeFullscreen();
+    } else if (document.getElementById('map-overlay').classList.contains('open')) {
+      closeMap();
+    }
+  }
+});
 </script>
 </body>
 </html>
