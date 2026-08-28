@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 15      # ampliado de 8 a 15 minutos
 
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - name: Checkout repo
@@ -23,11 +23,9 @@ jobs:
           python-version: '3.11'
 
       - name: Instalar dependencias
-        run: pip install requests supabase
+        run: pip install requests
 
-      - name: Capturar y subir camaras a Supabase
+      - name: Capturar y subir a GitHub Releases
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          SUPABASE_BUCKET: ${{ secrets.SUPABASE_BUCKET }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python capturar.py

@@ -1751,8 +1751,10 @@ function showSaveStatus(msg) {
 async function saveCoordToStorage(num, lat, lng) {
   savedCoordsCache[String(num)] = [lat, lng];
   showSaveStatus(`⏳ Guardando...`);
-  await saveCoordsToGist(savedCoordsCache, checkedCamsCache);
-  showSaveStatus(`✅ Cámara #${num} guardada`);
+  console.log('[GIST] Guardando cámara', num, lat, lng);
+  const ok = await saveCoordsToGist(savedCoordsCache, checkedCamsCache);
+  console.log('[GIST] Guardado:', ok ? 'ÉXITO' : 'FALLO');
+  showSaveStatus(ok ? `✅ Cámara #${num} guardada` : `❌ Error al guardar`);
 }
 
 async function markCamChecked(num) {
@@ -1792,13 +1794,17 @@ async function importCoords(event) {
 
 // Cargar coordenadas del Gist al inicio
 (async () => {
+  console.log('[GIST] Cargando coordenadas del Gist...');
   const data = await loadCoordsFromGist();
+  console.log('[GIST] Datos recibidos:', data);
   savedCoordsCache = data.coords || {};
   checkedCamsCache = data.checked || {};
+  console.log('[GIST] Coordenadas cargadas:', Object.keys(savedCoordsCache).length, 'cámaras');
   CAMERAS.forEach(c => {
     const coords = savedCoordsCache[String(c.num)] || CAM_COORDS[c.num];
     if (coords) { c.lat = coords[0]; c.lng = coords[1]; }
   });
+  console.log('[GIST] Primeras 3 cámaras:', CAMERAS.slice(0,3).map(c => ({num:c.num, lat:c.lat, lng:c.lng})));
 })();
 
 const PER_PAGE = 30;
@@ -2016,77 +2022,44 @@ function switchTab(tab) {
 // ════════════════════════════════════════════
 // HISTORIAL — Supabase Storage (corregido)
 // ════════════════════════════════════════════
-const SUPA_URL    = 'https://weregbuievtacuqzeuyj.supabase.co';
-const SUPA_KEY    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcmVnYnVpZXZ0YWN1cXpldXlqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzE0MTU0OSwiZXhwIjoyMDkyNzE3NTQ5fQ.vEeSjjV67BAu_P72Zzf3vu17bzrGSVhwXIcSXDzBMi8';
-const SUPA_BUCKET = 'historia';
+const GH_REPO = 'VictorP-Sec/camarasview2';
 
 let historialSnapshots   = [];
 let historialFotos       = [];
 let historialInitialized = false;
 let historialFilesMap    = new Map();
 
-async function supabaseListAll(prefix = '') {
-  const url = `${SUPA_URL}/storage/v1/object/list/${SUPA_BUCKET}`;
-  const body = { prefix, limit: 1000 };
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': `Bearer ${SUPA_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-  return res.json();
-}
-
-async function getSnapshotFolders() {
-  // Listamos raíz del bucket
-  const items = await supabaseListAll('');
-  const folders = [];
-  for (const item of items) {
-    // Los directorios aparecen con id === null y name sin extensión (o con /)
-    if (item.id === null && item.name) {
-      const name = item.name.replace(/\/$/, '');
-      if (/^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}$/.test(name)) {
-        folders.push(name);
-      }
-    }
-  }
-  return folders.sort().reverse();
-}
-
-async function getJpgFilesInFolder(folderPath) {
-  const prefix = folderPath.endsWith('/') ? folderPath : folderPath + '/';
-  const items = await supabaseListAll(prefix);
-  // Solo nos interesan los archivos .jpg (no directorios)
-  return items.filter(f => f.name && f.name.endsWith('.jpg') && f.id !== null);
-}
-
 async function buildHistorial() {
-  const folders = await getSnapshotFolders();
-  console.log('📁 Snapshots encontrados:', folders);
-  
+  const res = await fetch(`https://api.github.com/repos/${GH_REPO}/releases?per_page=100`);
+  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+  const releases = await res.json();
+
+  const snapshots = [];
   const snapshotMap = new Map();
-  
-  for (const folder of folders) {
-    const jpgs = await getJpgFilesInFolder(folder);
+
+  for (const rel of releases) {
+    const tag = rel.tag_name || '';
+    if (!tag.startsWith('snap-')) continue;
+    const ts = tag.replace('snap-', '');
+    snapshots.push(ts);
+
     const fotos = [];
-    for (const jpg of jpgs) {
-      const fullPath = folder + '/' + jpg.name;
-      const match = jpg.name.match(/^camara_(\d+)_/);
-      if (!match) continue;
-      const num = parseInt(match[1]);
+    for (const asset of (rel.assets || [])) {
+      const name = asset.name || '';
+      if (!name.endsWith('.jpg')) continue;
+      const num = parseInt(name.replace('.jpg', ''));
+      if (isNaN(num)) continue;
       const cam = CAMERAS.find(c => c.num === num);
-      const publicUrl = `${SUPA_URL}/storage/v1/object/public/${SUPA_BUCKET}/${fullPath}`;
-      fotos.push({ num, cam, url: publicUrl, snapshot: folder, fullPath });
+      const url = asset.browser_download_url;
+      fotos.push({ num, cam, url, snapshot: ts, fullPath: name });
     }
-    fotos.sort((a,b) => a.num - b.num);
-    snapshotMap.set(folder, fotos);
+    fotos.sort((a, b) => a.num - b.num);
+    snapshotMap.set(ts, fotos);
   }
-  
-  return { snapshots: folders, filesBySnapshot: snapshotMap };
+
+  snapshots.sort().reverse();
+  console.log('Releases found:', snapshots.length);
+  return { snapshots, filesBySnapshot: snapshotMap };
 }
 
 async function initHistorial() {
@@ -2100,9 +2073,9 @@ async function initHistorial() {
     const { snapshots, filesBySnapshot } = await buildHistorial();
     
     if (snapshots.length === 0) {
-      sel.innerHTML = '<option value="">⚠️ Sin snapshots — espera el próximo ciclo de 5 min</option>';
+      sel.innerHTML = '<option value="">⚠️ Sin snapshots — espera el próximo ciclo</option>';
       document.getElementById('historial-grid').innerHTML =
-        '<div class="hist-empty">📭 AÚN NO HAY SNAPSHOTS<br><br>SE GENERARÁN CADA 5 MINUTOS</div>';
+        '<div class="hist-empty">📭 AÚN NO HAY SNAPSHOTS<br><br>SE GENERARÁN CADA 10 MINUTOS</div>';
       return;
     }
 
@@ -2114,7 +2087,7 @@ async function initHistorial() {
     
   } catch (e) {
     console.error('initHistorial error:', e);
-    sel.innerHTML = '<option value="">❌ Error Supabase</option>';
+    sel.innerHTML = '<option value="">❌ Error GitHub</option>';
     document.getElementById('historial-grid').innerHTML = `<div class="hist-empty">❌ ERROR: ${e.message}</div>`;
   }
 }
