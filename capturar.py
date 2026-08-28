@@ -3,6 +3,7 @@ import re
 import sys
 import time
 import json
+import zipfile
 import subprocess
 import requests
 from datetime import datetime, timezone, timedelta
@@ -198,9 +199,8 @@ def main():
         (179, "CN340 C ANTONITA MORENO", "https://movilidad.alicante.es/sites/default/files/styles/upload_fotograma_big/public/camara/C66M1.jpg"),
     ]
 
-    # ── TIMESTAMP ──
     now = datetime.now(timezone.utc)
-    minute = (now.minute // 10) * 10
+    minute = (now.minute // 5) * 5
     ts = now.strftime(f"%Y-%m-%d_%H-{minute:02d}")
     tag = f"snap-{ts}"
     print(f"Snapshot: {tag}")
@@ -213,7 +213,7 @@ def main():
        "--notes", f"Auto-generated snapshot {ts}",
        "--latest=false")
 
-    # ── DESCARGAR Y SUBIR ──
+    # ── DESCARGAR FOTOS ──
     headers = {"User-Agent": "Mozilla/5.0 (compatible; CamarasAlicante/2.0)"}
     ok = 0
     fail = 0
@@ -222,8 +222,7 @@ def main():
 
     for num, calle, url in CAMERAS:
         num_str = str(num).zfill(3)
-        filename = f"{num_str}.jpg"
-        filepath = os.path.join(tmp_dir, filename)
+        filepath = os.path.join(tmp_dir, f"{num_str}.jpg")
         try:
             r = requests.get(url, headers=headers, timeout=10)
             if r.status_code == 200 and len(r.content) > 1000:
@@ -231,7 +230,6 @@ def main():
                     f.write(r.content)
                 ok += 1
             else:
-                print(f"  WARN #{num_str}: HTTP {r.status_code}")
                 fail += 1
         except Exception as e:
             print(f"  ERROR #{num_str}: {e}")
@@ -240,16 +238,25 @@ def main():
 
     print(f"Descargadas: {ok} | Fallos: {fail}")
 
-    # ── SUBIR ARCHIVOS AL RELEASE ──
-    print("Subiendo archivos al release...")
-    files = [os.path.join(tmp_dir, f) for f in os.listdir(tmp_dir) if f.endswith(".jpg")]
-    if files:
-        gh("release", "upload", tag, *files, "--repo", REPO, "--clobber")
-        print(f"Subidos: {len(files)} archivos")
+    # ── CREAR ZIP Y SUBIR 1 SOLO ARCHIVO ──
+    zip_path = f"/tmp/cam_{ts}.zip"
+    print("Creando zip...")
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for f in os.listdir(tmp_dir):
+            if f.endswith(".jpg"):
+                zf.write(os.path.join(tmp_dir, f), f)
+
+    zip_size = os.path.getsize(zip_path) / (1024 * 1024)
+    print(f"Zip: {zip_size:.1f} MB")
+
+    print("Subiendo zip al release...")
+    gh("release", "upload", tag, zip_path, "--repo", REPO, "--clobber")
+    print("Upload completado")
 
     # ── LIMPIAR TMP ──
     import shutil
     shutil.rmtree(tmp_dir, ignore_errors=True)
+    os.remove(zip_path)
 
     # ── BORRAR RELEASES ANTIGUOS (> 7 dias) ──
     print("Limpiando releases antiguos...")

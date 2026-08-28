@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   :root {
@@ -2043,18 +2044,10 @@ async function buildHistorial() {
     const ts = tag.replace('snap-', '');
     snapshots.push(ts);
 
-    const fotos = [];
-    for (const asset of (rel.assets || [])) {
-      const name = asset.name || '';
-      if (!name.endsWith('.jpg')) continue;
-      const num = parseInt(name.replace('.jpg', ''));
-      if (isNaN(num)) continue;
-      const cam = CAMERAS.find(c => c.num === num);
-      const url = asset.browser_download_url;
-      fotos.push({ num, cam, url, snapshot: ts, fullPath: name });
+    const zipAsset = (rel.assets || []).find(a => a.name.endsWith('.zip'));
+    if (zipAsset) {
+      snapshotMap.set(ts, { zipUrl: zipAsset.browser_download_url, fotos: null });
     }
-    fotos.sort((a, b) => a.num - b.num);
-    snapshotMap.set(ts, fotos);
   }
 
   snapshots.sort().reverse();
@@ -2098,13 +2091,35 @@ async function loadHistorialSnapshot() {
   if (!snapshot) return;
 
   const grid = document.getElementById('historial-grid');
-  grid.innerHTML = '<div class="hist-loading">⏳ CARGANDO FOTOS...</div>';
-  document.getElementById('hist-status').textContent = 'Cargando...';
+  grid.innerHTML = '<div class="hist-loading">⏳ DESCARGANDO Y EXTRAYENDO ZIP...</div>';
+  document.getElementById('hist-status').textContent = 'Descargando...';
 
   try {
-    const fotos = historialFilesMap.get(snapshot) || [];
-    historialFotos = fotos;
-    console.log(`✅ ${snapshot}: ${fotos.length} fotos cargadas`);
+    const entry = historialFilesMap.get(snapshot);
+    if (!entry) throw new Error('Snapshot no encontrado');
+
+    if (!entry.fotos) {
+      const res = await fetch(entry.zipUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const buf = await res.arrayBuffer();
+      const zip = await JSZip.loadAsync(buf);
+
+      const fotos = [];
+      for (const [name, file] of Object.entries(zip.files)) {
+        if (!name.endsWith('.jpg')) continue;
+        const num = parseInt(name.replace('.jpg', ''));
+        if (isNaN(num)) continue;
+        const blob = await file.async('blob');
+        const url = URL.createObjectURL(blob);
+        const cam = CAMERAS.find(c => c.num === num);
+        fotos.push({ num, cam, url, snapshot, fullPath: name });
+      }
+      fotos.sort((a, b) => a.num - b.num);
+      entry.fotos = fotos;
+    }
+
+    historialFotos = entry.fotos;
+    console.log(`${snapshot}: ${entry.fotos.length} fotos cargadas`);
     renderHistorial();
   } catch (e) {
     console.error('loadHistorialSnapshot error:', e);
@@ -2202,18 +2217,46 @@ async function openTimelapse(camNum, evt) {
   document.getElementById('tl-title').innerHTML =
     `TIMELAPSE · #${String(camNum).padStart(3,'0')} · ${cam ? cam.calle : ''}`;
   document.getElementById('tl-img').src = '';
-  document.getElementById('tl-counter').innerHTML = 'Cargando frames...';
+  document.getElementById('tl-counter').innerHTML = 'Cargando frames (puede tardar)...';
   document.getElementById('tl-progress-bar').style.width = '0%';
 
   stopTimelapse();
 
   const frames = [];
-  for (const [snap, fotos] of historialFilesMap.entries()) {
-    const foto = fotos.find(f => f.num === camNum);
+  const snaps = [...historialFilesMap.keys()].sort();
+  for (let i = 0; i < snaps.length; i++) {
+    const snap = snaps[i];
+    const entry = historialFilesMap.get(snap);
+
+    if (!entry.fotos) {
+      document.getElementById('tl-counter').innerHTML = `Descargando zip ${i+1}/${snaps.length}...`;
+      try {
+        const res = await fetch(entry.zipUrl);
+        if (!res.ok) continue;
+        const buf = await res.arrayBuffer();
+        const zip = await JSZip.loadAsync(buf);
+        const fotos = [];
+        for (const [name, file] of Object.entries(zip.files)) {
+          if (!name.endsWith('.jpg')) continue;
+          const num = parseInt(name.replace('.jpg', ''));
+          if (isNaN(num)) continue;
+          const blob = await file.async('blob');
+          const url = URL.createObjectURL(blob);
+          fotos.push({ num, url });
+        }
+        entry.fotos = fotos;
+      } catch (e) {
+        console.warn('zip error for', snap, e);
+        continue;
+      }
+    }
+
+    const foto = entry.fotos.find(f => f.num === camNum);
     if (foto) {
       frames.push({ url: foto.url, snap });
     }
   }
+
   frames.sort((a, b) => a.snap.localeCompare(b.snap));
   tlFrames = frames;
   tlFrameIdx = 0;
