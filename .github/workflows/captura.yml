@@ -8,7 +8,7 @@ on:
 jobs:
   capturar:
     runs-on: ubuntu-latest
-    timeout-minutes: 15      # ampliado de 8 a 15 minutos
+    timeout-minutes: 20
 
     permissions:
       contents: write

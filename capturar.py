@@ -236,7 +236,7 @@ def main():
         except Exception as e:
             print(f"  ERROR #{num_str}: {e}")
             fail += 1
-        time.sleep(0.3)
+        time.sleep(0.1)
 
     print(f"Descargadas: {ok} | Fallos: {fail}")
 
