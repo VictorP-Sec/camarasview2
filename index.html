@@ -813,6 +813,15 @@
   .map-btn.active { background: rgba(0,255,231,0.15); border-color: var(--accent); color: var(--accent); }
   .map-btn.close-btn { border-color: var(--accent2); color: var(--accent2); }
   .map-btn.close-btn:hover { background: rgba(255,45,85,0.15); }
+  .map-save-status {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #00ff88;
+    padding: 0 8px;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: center;
+  }
 
   .map-container {
     flex: 1;
@@ -1118,7 +1127,11 @@
     <div class="map-toolbar-title">🗺️ MAPA DE CÁMARAS</div>
     <button class="map-btn" onclick="refreshMapCams()">🔄 REFRESCAR</button>
     <button class="map-btn" id="editor-toggle-btn" onclick="toggleEditor()">📍 EDITOR</button>
+    <button class="map-btn" onclick="exportCoords()" title="Exportar coordenadas corregidas">📤 EXPORTAR</button>
+    <button class="map-btn" onclick="document.getElementById('import-file').click()" title="Importar coordenadas guardadas">📥 IMPORTAR</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importCoords(event)">
     <div class="map-cam-count" id="map-cam-count">—</div>
+    <div class="map-save-status" id="map-save-status"></div>
     <button class="map-btn close-btn" onclick="closeMap()">✕ CERRAR</button>
   </div>
   <div class="map-container">
@@ -1684,28 +1697,74 @@ const CAM_COORDS = {
   178:[38.3340,-0.4355], 179:[38.3345,-0.4350]
 };
 
-// Merge coords into CAMERAS (with localStorage override)
+// ─── SISTEMA DE COORDENADAS PERSISTENTES ───
+const STORAGE_KEY = 'camaras_coords_v2';
+const CHECKED_KEY = 'camaras_checked_v2';
+
 function getSavedCoords() {
-  try {
-    const raw = localStorage.getItem('savedCamCoords');
-    console.log('[COORDS]读取localStorage:', raw ? '有数据' : '空');
-    return JSON.parse(raw || '{}');
-  } catch(e) { console.log('[COORDS]解析错误:', e); return {}; }
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
 }
 function saveCoordToStorage(num, lat, lng) {
   const saved = getSavedCoords();
   saved[num] = [lat, lng];
-  const json = JSON.stringify(saved);
-  localStorage.setItem('savedCamCoords', json);
-  console.log('[COORDS]已保存相机', num, '→', lat, lng, '|localStorage大小:', json.length);
-  // 验证保存
-  const verify = localStorage.getItem('savedCamCoords');
-  console.log('[COORDS]验证读取:', verify ? '成功' : '失败');
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+  showSaveStatus(`✅ Cámara #${num} guardada`);
+}
+function getCheckedCams() {
+  try { return JSON.parse(localStorage.getItem(CHECKED_KEY) || '{}'); } catch { return {}; }
+}
+function markCamChecked(num) {
+  const c = getCheckedCams();
+  c[num] = Date.now();
+  localStorage.setItem(CHECKED_KEY, JSON.stringify(c));
+}
+function isCamChecked(num) {
+  return !!getCheckedCams()[num];
+}
+function showSaveStatus(msg) {
+  const el = document.getElementById('map-save-status');
+  if (el) { el.textContent = msg; setTimeout(() => el.textContent = '', 3000); }
+}
+
+function exportCoords() {
+  const data = {
+    coords: getSavedCoords(),
+    checked: getCheckedCams(),
+    exported: new Date().toISOString(),
+    count: Object.keys(getSavedCoords()).length
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `camaras_coords_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showSaveStatus(`📤 Exportado ${data.count} cámaras`);
+}
+
+function importCoords(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.coords) localStorage.setItem(STORAGE_KEY, JSON.stringify(data.coords));
+      if (data.checked) localStorage.setItem(CHECKED_KEY, JSON.stringify(data.checked));
+      const count = data.coords ? Object.keys(data.coords).length : 0;
+      showSaveStatus(`📥 Importado ${count} cámaras`);
+      // Recargar página para aplicar cambios
+      setTimeout(() => location.reload(), 500);
+    } catch(err) {
+      showSaveStatus('❌ Error al importar');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
 }
 
 const savedCoords = getSavedCoords();
-const savedCount = Object.keys(savedCoords).length;
-console.log('[COORDS]加载了', savedCount, '个已保存的坐标');
 CAMERAS.forEach(c => {
   const coords = savedCoords[c.num] || CAM_COORDS[c.num];
   if (coords) { c.lat = coords[0]; c.lng = coords[1]; }
@@ -2219,33 +2278,11 @@ function tlScrub(val) {
 // ════════════════════════════════════════════
 // MAPA DE CÁMARAS (Leaflet + OpenStreetMap)
 // ════════════════════════════════════════════
-// Test localStorage
-try {
-  localStorage.setItem('__test', '1');
-  localStorage.removeItem('__test');
-  console.log('[LS] localStorage disponible');
-} catch(e) {
-  console.log('[LS] localStorage NO disponible:', e);
-}
-
 let map = null;
 let mapMarkers = [];
 let editorMode = false;
 let editorMarker = null;
 let editorCam = null;
-
-// Sistema de cámaras chequeadas (localStorage)
-function getCheckedCams() {
-  try { return JSON.parse(localStorage.getItem('checkedCams') || '{}'); } catch { return {}; }
-}
-function markCamChecked(num) {
-  const c = getCheckedCams();
-  c[num] = Date.now();
-  localStorage.setItem('checkedCams', JSON.stringify(c));
-}
-function isCamChecked(num) {
-  return !!getCheckedCams()[num];
-}
 
 function openMap() {
   const overlay = document.getElementById('map-overlay');
@@ -2388,18 +2425,13 @@ function selectEditorCam(num) {
 }
 
 function saveEditorCoords() {
-  if (!editorCam || !editorMarker) {
-    console.log('[SAVE] No hay cámara o marcador seleccionado');
-    return;
-  }
+  if (!editorCam || !editorMarker) return;
   const ll = editorMarker.getLatLng();
   const lat = parseFloat(ll.lat.toFixed(6));
   const lng = parseFloat(ll.lng.toFixed(6));
-  console.log('[SAVE] Guardando cámara', editorCam.num, '→', lat, lng);
   editorCam.lat = lat;
   editorCam.lng = lng;
 
-  // Guardar en localStorage para persistir
   saveCoordToStorage(editorCam.num, lat, lng);
   markCamChecked(editorCam.num);
 
