@@ -9,7 +9,7 @@ from supabase import create_client
 SUPABASE_URL    = os.environ["SUPABASE_URL"]
 SUPABASE_KEY    = os.environ["SUPABASE_KEY"]
 SUPABASE_BUCKET = os.environ["SUPABASE_BUCKET"]
-MINUTOS_RETENER = 2880  # 48 horas (2 días)
+MINUTOS_RETENER = 10080  # 7 días
 
 def main():
     try:
