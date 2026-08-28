@@ -1684,9 +1684,19 @@ const CAM_COORDS = {
   178:[38.3340,-0.4355], 179:[38.3345,-0.4350]
 };
 
-// Merge coords into CAMERAS
+// Merge coords into CAMERAS (with localStorage override)
+function getSavedCoords() {
+  try { return JSON.parse(localStorage.getItem('savedCamCoords') || '{}'); } catch { return {}; }
+}
+function saveCoordToStorage(num, lat, lng) {
+  const saved = getSavedCoords();
+  saved[num] = [lat, lng];
+  localStorage.setItem('savedCamCoords', JSON.stringify(saved));
+}
+
+const savedCoords = getSavedCoords();
 CAMERAS.forEach(c => {
-  const coords = CAM_COORDS[c.num];
+  const coords = savedCoords[c.num] || CAM_COORDS[c.num];
   if (coords) { c.lat = coords[0]; c.lng = coords[1]; }
 });
 
@@ -2360,10 +2370,13 @@ function selectEditorCam(num) {
 function saveEditorCoords() {
   if (!editorCam || !editorMarker) return;
   const ll = editorMarker.getLatLng();
-  editorCam.lat = parseFloat(ll.lat.toFixed(6));
-  editorCam.lng = parseFloat(ll.lng.toFixed(6));
+  const lat = parseFloat(ll.lat.toFixed(6));
+  const lng = parseFloat(ll.lng.toFixed(6));
+  editorCam.lat = lat;
+  editorCam.lng = lng;
 
-  // Marcar como chequeada
+  // Guardar en localStorage para persistir
+  saveCoordToStorage(editorCam.num, lat, lng);
   markCamChecked(editorCam.num);
 
   const btn = document.querySelector('.map-editor-actions .map-btn');
