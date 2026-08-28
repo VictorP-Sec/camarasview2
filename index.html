@@ -1697,50 +1697,35 @@ const CAM_COORDS = {
   178:[38.3340,-0.4355], 179:[38.3345,-0.4350]
 };
 
-// ─── SISTEMA DE COORDENADAS PERSISTENTES (IndexedDB) ───
-const DB_NAME = 'CamarasDB';
-const DB_VERSION = 1;
-const STORE_COORDS = 'coords';
-const STORE_CHECKED = 'checked';
+// ─── SISTEMA DE COORDENADAS PERSISTENTES (Supabase Storage) ───
+const COORDS_FILE = 'camaras_coords.json';
+let savedCoordsCache = {};
+let checkedCamsCache = {};
 
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = e => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(STORE_COORDS)) db.createObjectStore(STORE_COORDS);
-      if (!db.objectStoreNames.contains(STORE_CHECKED)) db.createObjectStore(STORE_CHECKED);
-    };
-    req.onsuccess = e => resolve(e.target.result);
-    req.onerror = e => reject(e);
-  });
+async function loadCoordsFromSupabase() {
+  try {
+    const url = `${SUPA_URL}/storage/v1/object/public/${SUPA_BUCKET}/${COORDS_FILE}`;
+    const res = await fetch(url + '?t=' + Date.now());
+    if (!res.ok) return { coords: {}, checked: {} };
+    const data = await res.json();
+    return data;
+  } catch { return { coords: {}, checked: {} }; }
 }
 
-async function dbGet(store) {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(store, 'readonly');
-    const req = tx.objectStore(store).getAll();
-    const keysReq = tx.objectStore(store).getAllKeys();
-    req.onsuccess = () => {
-      keysReq.onsuccess = () => {
-        const result = {};
-        keysReq.result.forEach((k, i) => { result[k] = req.result[i]; });
-        resolve(result);
-      };
-    };
-    req.onerror = () => reject(req.error);
+async function saveCoordsToSupabase(coords, checked) {
+  const data = { coords, checked, updated: new Date().toISOString() };
+  const url = `${SUPA_URL}/storage/v1/object/${SUPA_BUCKET}/${COORDS_FILE}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': `Bearer ${SUPA_KEY}`,
+      'Content-Type': 'application/json',
+      'x-upsert': 'true'
+    },
+    body: JSON.stringify(data)
   });
-}
-
-async function dbSet(store, key, value) {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(store, 'readwrite');
-    tx.objectStore(store).put(value, key);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
+  return res.ok;
 }
 
 function showSaveStatus(msg) {
@@ -1749,86 +1734,68 @@ function showSaveStatus(msg) {
 }
 
 async function saveCoordToStorage(num, lat, lng) {
-  await dbSet(STORE_COORDS, String(num), [lat, lng]);
+  savedCoordsCache[String(num)] = [lat, lng];
+  await saveCoordsToSupabase(savedCoordsCache, checkedCamsCache);
   showSaveStatus(`✅ Cámara #${num} guardada`);
 }
 
 async function getSavedCoords() {
-  try { return await dbGet(STORE_COORDS); } catch { return {}; }
+  return savedCoordsCache;
 }
 
 async function markCamChecked(num) {
-  await dbSet(STORE_CHECKED, String(num), Date.now());
+  checkedCamsCache[String(num)] = Date.now();
+  await saveCoordsToSupabase(savedCoordsCache, checkedCamsCache);
 }
 
 async function isCamChecked(num) {
-  try {
-    const db = await openDB();
-    return new Promise(resolve => {
-      const tx = db.transaction(STORE_CHECKED, 'readonly');
-      const req = tx.objectStore(STORE_CHECKED).get(String(num));
-      req.onsuccess = () => resolve(!!req.result);
-      req.onerror = () => resolve(false);
-    });
-  } catch { return false; }
+  return !!checkedCamsCache[String(num)];
 }
 
 async function getCheckedCams() {
-  try { return await dbGet(STORE_CHECKED); } catch { return {}; }
+  return checkedCamsCache;
 }
 
 function exportCoords() {
-  dbGet(STORE_COORDS).then(coords => {
-    dbGet(STORE_CHECKED).then(checked => {
-      const data = { coords, checked, exported: new Date().toISOString(), count: Object.keys(coords).length };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `camaras_coords_${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showSaveStatus(`📤 Exportado ${data.count} cámaras`);
-    });
-  });
+  const data = { coords: savedCoordsCache, checked: checkedCamsCache, exported: new Date().toISOString(), count: Object.keys(savedCoordsCache).length };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `camaras_coords_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showSaveStatus(`📤 Exportado ${data.count} cámaras`);
 }
 
-function importCoords(event) {
+async function importCoords(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = async function(e) {
     try {
       const data = JSON.parse(e.target.result);
-      const promises = [];
-      if (data.coords) {
-        Object.entries(data.coords).forEach(([k, v]) => promises.push(dbSet(STORE_COORDS, k, v)));
-      }
-      if (data.checked) {
-        Object.entries(data.checked).forEach(([k, v]) => promises.push(dbSet(STORE_CHECKED, k, v)));
-      }
-      Promise.all(promises).then(() => {
-        showSaveStatus(`📥 Importado ${data.count || 0} cámaras`);
-        setTimeout(() => location.reload(), 500);
-      });
+      savedCoordsCache = data.coords || {};
+      checkedCamsCache = data.checked || {};
+      await saveCoordsToSupabase(savedCoordsCache, checkedCamsCache);
+      showSaveStatus(`📥 Importado ${Object.keys(savedCoordsCache).length} cámaras`);
+      setTimeout(() => location.reload(), 500);
     } catch { showSaveStatus('❌ Error al importar'); }
   };
   reader.readAsText(file);
   event.target.value = '';
 }
 
-// Cargar coordenadas al inicio
-getSavedCoords().then(savedCoords => {
+// Cargar coordenadas de Supabase al inicio
+(async () => {
+  const data = await loadCoordsFromSupabase();
+  savedCoordsCache = data.coords || {};
+  checkedCamsCache = data.checked || {};
   CAMERAS.forEach(c => {
-    const coords = savedCoords[String(c.num)] || CAM_COORDS[c.num];
+    const coords = savedCoordsCache[String(c.num)] || CAM_COORDS[c.num];
     if (coords) { c.lat = coords[0]; c.lng = coords[1]; }
   });
-}).catch(() => {
-  CAMERAS.forEach(c => {
-    const coords = CAM_COORDS[c.num];
-    if (coords) { c.lat = coords[0]; c.lng = coords[1]; }
-  });
-});
+})();
 
 const PER_PAGE = 30;
 let currentPage = 1;
@@ -1917,7 +1884,7 @@ function applyFilters() {
 document.getElementById('search-input').addEventListener('input', applyFilters);
 document.getElementById('barrio-select').addEventListener('change', applyFilters);
 
-async function render() {
+function render() {
   const grid = document.getElementById('cam-grid');
   const totalCams = filtered.length;
   const totalPages = Math.max(1, Math.ceil(totalCams / PER_PAGE));
@@ -1932,8 +1899,6 @@ async function render() {
   document.getElementById('stat-showing').textContent =
     totalCams === 0 ? 'SIN RESULTADOS' : `MOSTRANDO ${start + 1}–${end}`;
 
-  const checkedCams = await getCheckedCams();
-
   grid.innerHTML = '';
   if (slice.length === 0) {
     grid.innerHTML = '<div class="no-results">⚠ SIN RESULTADOS PARA ESTA BÚSQUEDA</div>';
@@ -1941,7 +1906,7 @@ async function render() {
     const timestamp = Date.now();
     slice.forEach(cam => {
       const srcWithTs = cam.url + '&t=' + timestamp;
-      const checked = !!checkedCams[String(cam.num)];
+      const checked = !!checkedCamsCache[String(cam.num)];
       const box = document.createElement('div');
       box.className = 'cam-box' + (checked ? ' checked' : '');
       box.innerHTML = `
@@ -2388,7 +2353,7 @@ function closeMap() {
   if (editorMode) toggleEditor();
 }
 
-async function refreshMapCams() {
+function refreshMapCams() {
   mapMarkers.forEach(m => map.removeLayer(m));
   mapMarkers = [];
 
@@ -2403,13 +2368,11 @@ async function refreshMapCams() {
     iconAnchor: [7, 7]
   });
 
-  const checkedCams = await getCheckedCams();
-
   camsWithCoords.forEach(cam => {
     const marker = L.marker([cam.lat, cam.lng], { icon: camIcon }).addTo(map);
 
     const imgSrc = cam.url + '&t=' + Date.now();
-    const checked = !!checkedCams[String(cam.num)];
+    const checked = !!checkedCamsCache[String(cam.num)];
     const popupHtml = `
       <div class="cam-popup">
         <div class="cam-popup-title">#${String(cam.num).padStart(3,'0')} · ${cam.calle}</div>
@@ -2496,10 +2459,13 @@ async function saveEditorCoords() {
   editorCam.lat = lat;
   editorCam.lng = lng;
 
+  const btn = document.querySelector('.map-editor-actions .map-btn');
+  btn.textContent = '⏳ GUARDANDO...';
+  btn.style.color = '#ffaa00';
+
   await saveCoordToStorage(editorCam.num, lat, lng);
   await markCamChecked(editorCam.num);
 
-  const btn = document.querySelector('.map-editor-actions .map-btn');
   btn.textContent = '✅ CHEKEADO';
   btn.style.color = '#00ff88';
   setTimeout(() => { btn.textContent = '💾 GUARDAR'; btn.style.color = ''; }, 1500);
