@@ -1697,33 +1697,48 @@ const CAM_COORDS = {
   178:[38.3340,-0.4355], 179:[38.3345,-0.4350]
 };
 
-// ─── SISTEMA DE COORDENADAS PERSISTENTES (Supabase Storage) ───
-const COORDS_FILE = 'camaras_coords.json';
+// ─── SISTEMA DE COORDENADAS PERSISTENTES (GitHub Gist) ───
+const GIST_ID = '71c835c7f05a47ca73528f0d6b98da96';
+const GIST_TOKEN = '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';
 let savedCoordsCache = {};
 let checkedCamsCache = {};
 
-async function loadCoordsFromSupabase() {
+async function loadCoordsFromGist() {
   try {
-    const url = `${SUPA_URL}/storage/v1/object/public/${SUPA_BUCKET}/${COORDS_FILE}`;
-    const res = await fetch(url + '?t=' + Date.now());
+    const url = `https://gist.githubusercontent.com/VictorP-Sec/${GIST_ID}/raw/coords.json?t=${Date.now()}`;
+    const res = await fetch(url);
     if (!res.ok) return { coords: {}, checked: {} };
-    const data = await res.json();
-    return data;
+    const text = await res.text();
+    return JSON.parse(text);
   } catch { return { coords: {}, checked: {} }; }
 }
 
-async function saveCoordsToSupabase(coords, checked) {
+async function saveCoordsToGist(coords, checked) {
+  // First get current file SHA
+  const getRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+    headers: { 'Authorization': `Bearer ${GIST_TOKEN}` }
+  });
+  const gist = await getRes.json();
+  const sha = gist.files['coords.json']?.sha;
+
   const data = { coords, checked, updated: new Date().toISOString() };
-  const url = `${SUPA_URL}/storage/v1/object/${SUPA_BUCKET}/${COORDS_FILE}`;
-  const res = await fetch(url, {
-    method: 'POST',
+  const body = {
+    description: 'Cámaras Alicante - Coordenadas',
+    files: {
+      'coords.json': {
+        content: JSON.stringify(data, null, 2),
+        ...(sha ? { sha } : {})
+      }
+    }
+  };
+
+  const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+    method: 'PATCH',
     headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': `Bearer ${SUPA_KEY}`,
-      'Content-Type': 'application/json',
-      'x-upsert': 'true'
+      'Authorization': `Bearer ${GIST_TOKEN}`,
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(body)
   });
   return res.ok;
 }
@@ -1735,25 +1750,14 @@ function showSaveStatus(msg) {
 
 async function saveCoordToStorage(num, lat, lng) {
   savedCoordsCache[String(num)] = [lat, lng];
-  await saveCoordsToSupabase(savedCoordsCache, checkedCamsCache);
+  showSaveStatus(`⏳ Guardando...`);
+  await saveCoordsToGist(savedCoordsCache, checkedCamsCache);
   showSaveStatus(`✅ Cámara #${num} guardada`);
-}
-
-async function getSavedCoords() {
-  return savedCoordsCache;
 }
 
 async function markCamChecked(num) {
   checkedCamsCache[String(num)] = Date.now();
-  await saveCoordsToSupabase(savedCoordsCache, checkedCamsCache);
-}
-
-async function isCamChecked(num) {
-  return !!checkedCamsCache[String(num)];
-}
-
-async function getCheckedCams() {
-  return checkedCamsCache;
+  await saveCoordsToGist(savedCoordsCache, checkedCamsCache);
 }
 
 function exportCoords() {
@@ -1777,7 +1781,7 @@ async function importCoords(event) {
       const data = JSON.parse(e.target.result);
       savedCoordsCache = data.coords || {};
       checkedCamsCache = data.checked || {};
-      await saveCoordsToSupabase(savedCoordsCache, checkedCamsCache);
+      await saveCoordsToGist(savedCoordsCache, checkedCamsCache);
       showSaveStatus(`📥 Importado ${Object.keys(savedCoordsCache).length} cámaras`);
       setTimeout(() => location.reload(), 500);
     } catch { showSaveStatus('❌ Error al importar'); }
@@ -1786,9 +1790,9 @@ async function importCoords(event) {
   event.target.value = '';
 }
 
-// Cargar coordenadas de Supabase al inicio
+// Cargar coordenadas del Gist al inicio
 (async () => {
-  const data = await loadCoordsFromSupabase();
+  const data = await loadCoordsFromGist();
   savedCoordsCache = data.coords || {};
   checkedCamsCache = data.checked || {};
   CAMERAS.forEach(c => {
