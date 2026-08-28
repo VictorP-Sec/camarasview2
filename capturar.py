@@ -7,6 +7,7 @@ import zipfile
 import subprocess
 import requests
 from datetime import datetime, timezone, timedelta
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 REPO = "VictorP-Sec/camarasview2"
 MINUTOS_RETENER = 10080  # 7 dias
@@ -220,21 +221,28 @@ def main():
     tmp_dir = f"/tmp/cam_{ts}"
     os.makedirs(tmp_dir, exist_ok=True)
 
-    for num, calle, url in CAMERAS:
+    def download_cam(cam_data):
+        num, calle, url = cam_data
         num_str = str(num).zfill(3)
         filepath = os.path.join(tmp_dir, f"{num_str}.jpg")
         try:
-            r = requests.get(url, headers=headers, timeout=10)
+            r = requests.get(url, headers=headers, timeout=15)
             if r.status_code == 200 and len(r.content) > 1000:
                 with open(filepath, "wb") as f:
                     f.write(r.content)
+                return True, num_str
+            return False, num_str
+        except Exception as e:
+            return False, num_str
+
+    with ThreadPoolExecutor(max_workers=20) as pool:
+        futures = {pool.submit(download_cam, cam): cam for cam in CAMERAS}
+        for future in as_completed(futures):
+            success, num_str = future.result()
+            if success:
                 ok += 1
             else:
                 fail += 1
-        except Exception as e:
-            print(f"  ERROR #{num_str}: {e}")
-            fail += 1
-        time.sleep(0.1)
 
     print(f"Descargadas: {ok} | Fallos: {fail}")
 
