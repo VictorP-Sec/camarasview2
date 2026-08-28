@@ -10,6 +10,7 @@ from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 REPO = "VictorP-Sec/camarasview2"
+PROXY = "https://camarasview2.vercel.app/api/proxy"
 MINUTOS_RETENER = 10080  # 7 dias
 
 def gh(*args):
@@ -230,8 +231,9 @@ def main():
         num, calle, url = cam_data
         num_str = str(num).zfill(3)
         filepath = os.path.join(tmp_dir, f"{num_str}.jpg")
+        proxy_url = f"{PROXY}?url={requests.utils.quote(url, safe='')}"
         try:
-            r = requests.get(url, headers=headers, timeout=15)
+            r = requests.get(proxy_url, headers=headers, timeout=15)
             if r.status_code == 200 and len(r.content) > 1000:
                 with open(filepath, "wb") as f:
                     f.write(r.content)
