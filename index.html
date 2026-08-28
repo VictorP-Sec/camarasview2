@@ -1686,15 +1686,26 @@ const CAM_COORDS = {
 
 // Merge coords into CAMERAS (with localStorage override)
 function getSavedCoords() {
-  try { return JSON.parse(localStorage.getItem('savedCamCoords') || '{}'); } catch { return {}; }
+  try {
+    const raw = localStorage.getItem('savedCamCoords');
+    console.log('[COORDS]读取localStorage:', raw ? '有数据' : '空');
+    return JSON.parse(raw || '{}');
+  } catch(e) { console.log('[COORDS]解析错误:', e); return {}; }
 }
 function saveCoordToStorage(num, lat, lng) {
   const saved = getSavedCoords();
   saved[num] = [lat, lng];
-  localStorage.setItem('savedCamCoords', JSON.stringify(saved));
+  const json = JSON.stringify(saved);
+  localStorage.setItem('savedCamCoords', json);
+  console.log('[COORDS]已保存相机', num, '→', lat, lng, '|localStorage大小:', json.length);
+  // 验证保存
+  const verify = localStorage.getItem('savedCamCoords');
+  console.log('[COORDS]验证读取:', verify ? '成功' : '失败');
 }
 
 const savedCoords = getSavedCoords();
+const savedCount = Object.keys(savedCoords).length;
+console.log('[COORDS]加载了', savedCount, '个已保存的坐标');
 CAMERAS.forEach(c => {
   const coords = savedCoords[c.num] || CAM_COORDS[c.num];
   if (coords) { c.lat = coords[0]; c.lng = coords[1]; }
@@ -2208,6 +2219,15 @@ function tlScrub(val) {
 // ════════════════════════════════════════════
 // MAPA DE CÁMARAS (Leaflet + OpenStreetMap)
 // ════════════════════════════════════════════
+// Test localStorage
+try {
+  localStorage.setItem('__test', '1');
+  localStorage.removeItem('__test');
+  console.log('[LS] localStorage disponible');
+} catch(e) {
+  console.log('[LS] localStorage NO disponible:', e);
+}
+
 let map = null;
 let mapMarkers = [];
 let editorMode = false;
@@ -2368,10 +2388,14 @@ function selectEditorCam(num) {
 }
 
 function saveEditorCoords() {
-  if (!editorCam || !editorMarker) return;
+  if (!editorCam || !editorMarker) {
+    console.log('[SAVE] No hay cámara o marcador seleccionado');
+    return;
+  }
   const ll = editorMarker.getLatLng();
   const lat = parseFloat(ll.lat.toFixed(6));
   const lng = parseFloat(ll.lng.toFixed(6));
+  console.log('[SAVE] Guardando cámara', editorCam.num, '→', lat, lng);
   editorCam.lat = lat;
   editorCam.lng = lng;
 
