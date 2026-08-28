@@ -1,8 +1,6 @@
 name: Captura Camaras Alicante
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'  # cada 5 minutos
   workflow_dispatch:
 
 jobs:
