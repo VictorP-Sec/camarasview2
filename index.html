@@ -1990,7 +1990,8 @@ function renderPagination(totalPages) {
 }
 
 function openModal(cam) {
-  const srcWithTs = cam.url + '?t=' + Date.now();
+  const camCode = cam.url.match(/camara\/([A-Z0-9]+)\.jpg/)?.[1] || '';
+  const srcWithTs = '/api/upscale?code=' + camCode + '&t=' + Date.now();
   document.getElementById('modal-title').textContent =
     `#${String(cam.num).padStart(3,'0')} · ${cam.calle}`;
   document.getElementById('modal-img').src = srcWithTs;
@@ -2351,7 +2352,8 @@ function refreshMapCams() {
   camsWithCoords.forEach(cam => {
     const marker = L.marker([cam.lat, cam.lng], { icon: camIcon }).addTo(map);
 
-    const imgSrc = cam.url + '?t=' + Date.now();
+    const camCode = cam.url.match(/camara\/([A-Z0-9]+)\.jpg/)?.[1] || '';
+    const imgSrc = '/api/upscale?code=' + camCode + '&t=' + Date.now();
     const checked = !!checkedCamsCache[String(cam.num)];
     const popupHtml = `
       <div class="cam-popup">
